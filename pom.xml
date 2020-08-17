@@ -11,8 +11,8 @@
     </properties>
 
     <groupId>net.ultragrav</groupId>
-    <artifactId>UltraCommands</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <artifactId>Commands</artifactId>
+    <version>1.0.0</version>
 
     <repositories>
         <repository>
