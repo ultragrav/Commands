@@ -52,6 +52,8 @@ public abstract class UltraCommand {
             if (!isAllowConsole() && getPlayer() == null)
                 throw new CommandException("Sorry, console is not allowed to execute this command");
 
+            preConditions();
+
             if (hasChildren() && args.size() > 0) {
                 String label = args.get(0);
 
@@ -71,7 +73,6 @@ public abstract class UltraCommand {
             }
 
             this.perform();
-
         } catch (CommandException exception) {
             // - This is our main exception to catch all of the little things mostly for parsing.
             tell(exception.getMessage());
@@ -82,6 +83,8 @@ public abstract class UltraCommand {
         }
 
     }
+
+    protected void preConditions() {}
 
     /**
      * By default it will execute the help command.
