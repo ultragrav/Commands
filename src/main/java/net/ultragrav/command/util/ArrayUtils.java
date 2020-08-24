@@ -1,5 +1,6 @@
 package net.ultragrav.command.util;
 
+import java.util.List;
 import java.util.function.Function;
 
 public class ArrayUtils {

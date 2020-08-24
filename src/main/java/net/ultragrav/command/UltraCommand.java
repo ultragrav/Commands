@@ -26,6 +26,9 @@ public abstract class UltraCommand {
     protected UltraCommand parent;
     protected String description;
     protected boolean allowConsole = true;
+    @Setter
+    @Getter
+    protected boolean requirePermission = true;
     // ----------------------------------- //
     // COMMAND EXECUTION
     // ----------------------------------- //
@@ -42,6 +45,10 @@ public abstract class UltraCommand {
         this.args = args;
 
         try {
+            if (isRequirePermission() && !sender.hasPermission(getPermission())) {
+                throw new CommandException("§cYou do not have permission to execute this command.");
+            }
+
             if (!isAllowConsole() && getPlayer() == null)
                 throw new CommandException("Sorry, console is not allowed to execute this command");
 
@@ -127,6 +134,10 @@ public abstract class UltraCommand {
             ret.add(getFullCommand() + " " + getParameterDescriptions());
         }
         return ret;
+    }
+
+    public String getPermission() {
+        return (parent == null ? "" : parent.getPermission() + ".") + aliases.get(0);
     }
 
     // ----------------------------------- //

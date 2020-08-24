@@ -6,6 +6,8 @@ public class ExampleCommand extends UltraCommand {
     public ExampleCommand() {
         this.addAlias("example");
 
-
+        this.addChildren(
+                new ExampleSubCommand()
+        );
     }
 }
