@@ -54,7 +54,7 @@ public class Parameter<T> {
 	// ----------------------------------- //
 
 	public boolean isRequired() {
-		return this.getDefaultDesc() == null;
+		return this.getDefaultValue() == null;
 	}
 
 	public boolean isOptional() {

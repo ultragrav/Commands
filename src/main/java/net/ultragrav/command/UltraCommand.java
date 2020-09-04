@@ -67,7 +67,7 @@ public abstract class UltraCommand {
                 } // If the subcommand isn't found, call this.preform() since it sends help
             }
 
-            if (getRequiredParameterCount() > args.size()) {
+            if (args.size() < getRequiredParameterCount() || args.size() > parameters.size()) {
                 sendHelp();
                 throw new CommandException("");
             }
@@ -115,7 +115,7 @@ public abstract class UltraCommand {
             if (param.isOptional()) {
                 name = "[" + name + "]";
             } else {
-                name = "{" + name + "}";
+                name = "<" + name + ">";
             }
             params.add(name);
         }
