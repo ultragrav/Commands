@@ -36,6 +36,16 @@ public abstract class UltraCommand {
     protected List<String> args;
     private List<Parameter<?>> parameters = new ArrayList<>();
 
+    @Getter
+    @Setter
+    private String helpFormat = "/<cmd> <args>";
+    @Getter
+    @Setter
+    private String helpHeader = "&cUsage:";
+    @Getter
+    @Setter
+    private String helpFooter = "";
+
     /**
      * @param sender The person that executed this command either a player or the console.
      * @param args   The arguments that are bound for this command.
@@ -102,7 +112,7 @@ public abstract class UltraCommand {
 
     public String getFullCommand() {
         if (parent == null) {
-            return "/" + getAliases().get(0);
+            return getAliases().get(0);
         } else {
             return parent.getFullCommand() + " " + getAliases().get(0);
         }
@@ -123,18 +133,27 @@ public abstract class UltraCommand {
     }
 
     public void sendHelp() {
+        tell(helpHeader);
         getHelp().forEach(this::tell);
+        tell(helpFooter);
     }
 
     public List<String> getHelp() {
+        return getHelp(helpFormat);
+    }
+
+    public List<String> getHelp(String format) {
         List<String> ret = new ArrayList<>();
         if (hasChildren()) {
             for (UltraCommand cmd : children) {
-                ret.addAll(cmd.getHelp());
+                ret.addAll(cmd.getHelp(format));
             }
         }
         if (!parameters.isEmpty()) {
-            ret.add(getFullCommand() + " " + getParameterDescriptions());
+            ret.add(format.replace("<cmd>", getFullCommand())
+                    .replace("<desc>", getDescription())
+                    .replace("<args>", getParameterDescriptions())
+                    .replace("<perm>", getPermission()));
         }
         return ret;
     }
