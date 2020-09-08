@@ -37,13 +37,10 @@ public abstract class UltraCommand {
     private List<Parameter<?>> parameters = new ArrayList<>();
 
     @Getter
-    @Setter
     private String helpFormat = "/<cmd> <args>";
     @Getter
-    @Setter
     private String helpHeader = "&cUsage:";
     @Getter
-    @Setter
     private String helpFooter = "";
 
     /**
@@ -151,6 +148,21 @@ public abstract class UltraCommand {
                     .replace("<perm>", getPermission()));
         }
         return ret;
+    }
+
+    public void setHelpFooter(String helpFooter) {
+        this.helpFooter = helpFooter;
+        this.getChildren().forEach(c -> c.setHelpFooter(helpFooter));
+    }
+
+    public void setHelpFormat(String helpFormat) {
+        this.helpFormat = helpFormat;
+        this.getChildren().forEach(c -> c.setHelpFormat(helpFormat));
+    }
+
+    public void setHelpHeader(String helpHeader) {
+        this.helpHeader = helpHeader;
+        this.getChildren().forEach(c -> c.setHelpHeader(helpHeader));
     }
 
     public String getPermission() {
@@ -301,6 +313,9 @@ public abstract class UltraCommand {
         this.children.addAll(Arrays.asList(commands));
         for (UltraCommand command : commands) {
             command.setParent(this);
+            command.setHelpHeader(this.helpHeader);
+            command.setHelpFooter(this.helpFooter);
+            command.setHelpFormat(this.helpFormat);
         }
     }
 
