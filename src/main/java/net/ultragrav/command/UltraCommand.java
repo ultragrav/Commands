@@ -24,7 +24,7 @@ public abstract class UltraCommand {
     @Getter
     @Setter
     protected UltraCommand parent;
-    protected String description;
+    protected String description = "";
     protected boolean allowConsole = true;
     @Setter
     @Getter
@@ -102,12 +102,7 @@ public abstract class UltraCommand {
      * you will need to override this method.
      */
     protected void perform() {
-        if (hasChildren()) {
-            tell("&cUsage:");
-        }
-        for (String str : getHelp()) {
-            tell(str);
-        }
+        sendHelp();
     }
 
     public String getFullCommand() {
