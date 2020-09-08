@@ -91,7 +91,8 @@ public abstract class UltraCommand {
 
     }
 
-    protected void preConditions() {}
+    protected void preConditions() {
+    }
 
     /**
      * By default it will execute the help command.
@@ -125,9 +126,11 @@ public abstract class UltraCommand {
     }
 
     public void sendHelp() {
-        tell(helpHeader);
+        if (helpHeader != null)
+            tell(helpHeader);
         getHelp().forEach(this::tell);
-        tell(helpFooter);
+        if (helpFooter != null)
+            tell(helpFooter);
     }
 
     public List<String> getHelp() {
