@@ -5,7 +5,6 @@ import net.ultragrav.command.provider.UltraProvider;
 public class Parameter<T> {
 	public static final String DEFAULT_DESC_DEFAULT = null;
 	public static final Object DEFAULT_VALUE_DEFAULT = null;
-	public static final String DESCRIPTION_DEFAULT = null;
 
 	protected UltraProvider<T> provider;
 	protected String name = null;
@@ -54,7 +53,7 @@ public class Parameter<T> {
 	// ----------------------------------- //
 
 	public boolean isRequired() {
-		return this.getDefaultValue() == null;
+		return this.isDefaultValueSet();
 	}
 
 	public boolean isOptional() {
@@ -96,14 +95,10 @@ public class Parameter<T> {
 
 	public void setDefaultValue(final T defaultValue) {
 		this.defaultValue = defaultValue;
+		this.defaultValueSet = true;
 	}
 
 	public boolean isDefaultValueSet() {
 		return defaultValueSet;
 	}
-
-	public void setDefaultValueSet(final boolean defaultValueSet) {
-		this.defaultValueSet = defaultValueSet;
-	}
-
 }
