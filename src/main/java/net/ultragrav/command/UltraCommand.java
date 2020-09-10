@@ -144,12 +144,10 @@ public abstract class UltraCommand {
                 ret.addAll(cmd.getHelp(format));
             }
         }
-        if (!parameters.isEmpty()) {
-            ret.add(format.replace("<cmd>", getFullCommand())
-                    .replace("<desc>", getDescription())
-                    .replace("<args>", getParameterDescriptions())
-                    .replace("<perm>", getPermission()));
-        }
+        ret.add(format.replace("<cmd>", getFullCommand())
+                .replace("<desc>", getDescription())
+                .replace("<args>", getParameterDescriptions())
+                .replace("<perm>", getPermission()));
         return ret;
     }
 
