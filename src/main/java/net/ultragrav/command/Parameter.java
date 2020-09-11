@@ -21,6 +21,7 @@ public class Parameter<T> {
 		this.setProvider(type);
 		this.setName(name);
 		this.setDefaultDesc(defaultDesc);
+		this.setDefaultValueSet(true);
 		this.setDefaultValue(defaultValue);
 	}
 
@@ -29,7 +30,7 @@ public class Parameter<T> {
 		this((T) DEFAULT_VALUE_DEFAULT, type, name, defaultDesc);
 
 		// In fact the default value is not set.
-		this.defaultValueSet = false;
+		this.setDefaultValueSet(false);
 	}
 
 	public Parameter(UltraProvider<T> type, String name) {
