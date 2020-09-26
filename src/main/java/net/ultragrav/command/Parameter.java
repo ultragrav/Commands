@@ -54,7 +54,7 @@ public class Parameter<T> {
 	// ----------------------------------- //
 
 	public boolean isRequired() {
-		return this.isDefaultValueSet();
+		return !this.isDefaultValueSet();
 	}
 
 	public boolean isOptional() {
