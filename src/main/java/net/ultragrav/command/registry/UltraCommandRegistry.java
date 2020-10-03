@@ -22,18 +22,25 @@ public final class UltraCommandRegistry {
             commandMapField.setAccessible(true);
 
             CommandMap commandMap = (CommandMap) commandMapField.get(Bukkit.getServer());
-            if (commandMap.getCommand(label) != null) {
-                // Need to remove the command
-                Field internalKnownCommandsField = commandMap.getClass().getDeclaredField("knownCommands");
-                internalKnownCommandsField.setAccessible(true);
-
-                Map<String, Command> internalCommands = (Map<String, Command>) internalKnownCommandsField.get(commandMap);
-                internalCommands.remove(label.toLowerCase());
+            unregister(commandMap, label);
+            for (String str : command.getAliases()) {
+                unregister(commandMap, str);
             }
             commandMap.register(label, new UltraCommandExecutor(label, command));
             registerCommand.add(command);
         } catch (Exception exception) {
             exception.printStackTrace();
+        }
+    }
+
+    public static void unregister(CommandMap commandMap, String str) throws NoSuchFieldException, IllegalAccessException {
+        if (commandMap.getCommand(str) != null) {
+            // Need to remove the command
+            Field internalKnownCommandsField = commandMap.getClass().getDeclaredField("knownCommands");
+            internalKnownCommandsField.setAccessible(true);
+
+            Map<String, Command> internalCommands = (Map<String, Command>) internalKnownCommandsField.get(commandMap);
+            internalCommands.remove(str.toLowerCase());
         }
     }
 

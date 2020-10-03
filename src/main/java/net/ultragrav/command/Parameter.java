@@ -10,7 +10,7 @@ public class Parameter<T> {
 	protected String name = null;
 	protected String defaultDesc = null;
 	protected T defaultValue = null;
-	protected boolean defaultValueSet = false;
+	protected boolean defaultValueSet;
 
 	public Parameter(T defaultValue, UltraProvider<T> type, String name, String defaultDesc) {
 		// Null checks
@@ -20,7 +20,6 @@ public class Parameter<T> {
 		this.setProvider(type);
 		this.setName(name);
 		this.setDefaultDesc(defaultDesc);
-		this.defaultValueSet = true;
 		this.setDefaultValue(defaultValue);
 	}
 

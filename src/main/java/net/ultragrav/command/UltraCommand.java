@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import lombok.Getter;
 import lombok.Setter;
+import net.md_5.bungee.api.chat.BaseComponent;
 import net.ultragrav.command.exception.CommandException;
 import net.ultragrav.command.provider.UltraProvider;
 import net.ultragrav.command.registry.UltraCommandRegistry;
@@ -88,7 +89,6 @@ public abstract class UltraCommand {
             sender = null;
             args = null;
         }
-
     }
 
     protected void preConditions() {
@@ -219,7 +219,7 @@ public abstract class UltraCommand {
     private List<String> getTabCompletionsArguments(CommandSender sender, List<String> args) {
         int index = args.size() - 1;
 
-        if (!this.hasParameterForIndex(index)) return Collections.emptyList();
+        if (this.noParameterForIndex(index)) return Collections.emptyList();
         UltraProvider<?> provider = this.getParameters().get(index).getProvider();
 
         return provider.tabComplete(args.get(index));
@@ -229,7 +229,7 @@ public abstract class UltraCommand {
     // ARGUMENTS
     // ----------------------------------- //
     public <T> T getArgument(int index) {
-        if (!this.hasParameterForIndex(index))
+        if (this.noParameterForIndex(index))
             throw new IllegalArgumentException(index + " is out of range. Parameters size: " + this.getParameters().size());
 
         Parameter<T> parameter = (Parameter<T>) this.getParameters().get(index);
@@ -269,32 +269,32 @@ public abstract class UltraCommand {
     }
 
     protected <T> Parameter<T> addParameter(T defaultValue, UltraProvider<T> provider, String name, String description) {
-        return this.addParameter(new Parameter<T>(defaultValue, provider, name, description));
+        return this.addParameter(new Parameter<>(defaultValue, provider, name, description));
     }
 
     protected <T> Parameter<T> addParameter(UltraProvider<T> provider, String name, String description) {
-        return this.addParameter(new Parameter<T>(provider, name, description));
+        return this.addParameter(new Parameter<>(provider, name, description));
     }
 
     protected <T> Parameter<T> addParameter(UltraProvider<T> provider, String name) {
-        return this.addParameter(new Parameter<T>(provider, name));
+        return this.addParameter(new Parameter<>(provider, name));
     }
 
     protected <T> Parameter<T> addParameter(T defaultValue, UltraProvider<T> provider, String name) {
-        return this.addParameter(new Parameter<T>(defaultValue, provider, name));
+        return this.addParameter(new Parameter<>(defaultValue, provider, name));
     }
 
     protected <T> Parameter<T> addParameter(UltraProvider<T> provider) {
-        return this.addParameter(new Parameter<T>(provider));
+        return this.addParameter(new Parameter<>(provider));
     }
 
     protected <T> Parameter<T> addParameter(T defaultValue, UltraProvider<T> provider) {
-        return this.addParameter(new Parameter<T>(defaultValue, provider));
+        return this.addParameter(new Parameter<>(defaultValue, provider));
     }
 
-    protected boolean hasParameterForIndex(int index) {
-        if (index < 0) return false;
-        return this.getParameters().size() > index;
+    protected boolean noParameterForIndex(int index) {
+        if (index < 0) return true;
+        return this.getParameters().size() <= index;
     }
 
 
@@ -330,6 +330,10 @@ public abstract class UltraCommand {
 
     protected void tell(String message) {
         sender.sendMessage(colorize(message));
+    }
+
+    protected void tell(BaseComponent message) {
+        sender.spigot().sendMessage(message);
     }
 
     protected String colorize(String message) {

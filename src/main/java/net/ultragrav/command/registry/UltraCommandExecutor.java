@@ -19,7 +19,9 @@ public final class UltraCommandExecutor extends Command {
 	public UltraCommandExecutor(String label, UltraCommand command) {
 		super(label);
 		this.command = command;
-		if (!command.getAliases().isEmpty()) this.setAliases(command.getAliases());
+		List<String> aliases = command.getAliases();
+		aliases.remove(label);
+		if (!aliases.isEmpty()) this.setAliases(aliases);
 	}
 
 	@Override
