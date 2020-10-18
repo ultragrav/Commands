@@ -6,6 +6,7 @@ import net.ultragrav.command.UltraCommand;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -19,7 +20,7 @@ public final class UltraCommandExecutor extends Command {
 	public UltraCommandExecutor(String label, UltraCommand command) {
 		super(label);
 		this.command = command;
-		List<String> aliases = command.getAliases();
+		List<String> aliases = new ArrayList<>(command.getAliases());
 		aliases.remove(label);
 		if (!aliases.isEmpty()) this.setAliases(aliases);
 	}

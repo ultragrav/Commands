@@ -13,6 +13,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @SuppressWarnings("unchecked")
 public abstract class UltraCommand {
@@ -49,6 +50,7 @@ public abstract class UltraCommand {
      * @param args   The arguments that are bound for this command.
      */
     public void execute(CommandSender sender, List<String> args) {
+
         this.sender = sender;
         this.args = args;
 
@@ -147,6 +149,7 @@ public abstract class UltraCommand {
         ret.add(format.replace("<cmd>", getFullCommand())
                 .replace("<desc>", getDescription())
                 .replace("<args>", getParameterDescriptions())
+                .replace("<params>", getParameterDescriptions())
                 .replace("<perm>", getPermission()));
         return ret;
     }
@@ -305,7 +308,7 @@ public abstract class UltraCommand {
     }
 
     private void addAliases(String... aliases) {
-        this.aliases.addAll(Arrays.asList(aliases));
+        this.aliases.addAll(Arrays.stream(aliases).map(String::toLowerCase).collect(Collectors.toList()));
     }
 
     // Add subcommands
