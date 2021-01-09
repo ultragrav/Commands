@@ -1,4 +1,4 @@
-package net.ultragrav.command.registry;
+package net.ultragrav.command.registry.spigot;
 
 import com.google.common.collect.Lists;
 import lombok.Getter;
@@ -13,11 +13,11 @@ import java.util.List;
 /**
  * A wrapper for the UltraCommand class that allows it to be registered to bukkit.
  */
-public final class UltraCommandExecutor extends Command {
+public final class ExecutorSpigot extends Command {
 	@Getter
 	private final UltraCommand command;
 
-	public UltraCommandExecutor(String label, UltraCommand command) {
+	public ExecutorSpigot(String label, UltraCommand command) {
 		super(label);
 		this.command = command;
 		List<String> aliases = new ArrayList<>(command.getAliases());
@@ -27,7 +27,7 @@ public final class UltraCommandExecutor extends Command {
 
 	@Override
 	public boolean execute(final CommandSender sender, final String commandLabel, final String[] args) {
-		command.execute(sender, Lists.newArrayList(args));
+		command.execute(UtilSpigot.wrap(sender), Lists.newArrayList(args));
 		return false;
 	}
 

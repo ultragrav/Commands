@@ -7,7 +7,9 @@ import lombok.Setter;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.ultragrav.command.exception.CommandException;
 import net.ultragrav.command.provider.UltraProvider;
-import net.ultragrav.command.registry.UltraCommandRegistry;
+import net.ultragrav.command.registry.spigot.RegistrySpigot;
+import net.ultragrav.command.wrapper.player.UltraPlayer;
+import net.ultragrav.command.wrapper.sender.UltraSender;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -34,7 +36,7 @@ public abstract class UltraCommand {
     // ----------------------------------- //
     // COMMAND EXECUTION
     // ----------------------------------- //
-    protected CommandSender sender;
+    protected UltraSender sender;
     protected List<String> args;
     private List<Parameter<?>> parameters = new ArrayList<>();
 
@@ -49,8 +51,7 @@ public abstract class UltraCommand {
      * @param sender The person that executed this command either a player or the console.
      * @param args   The arguments that are bound for this command.
      */
-    public void execute(CommandSender sender, List<String> args) {
-
+    public void execute(UltraSender sender, List<String> args) {
         this.sender = sender;
         this.args = args;
 
@@ -335,16 +336,12 @@ public abstract class UltraCommand {
         sender.sendMessage(colorize(message));
     }
 
-    protected void tell(BaseComponent message) {
-        sender.spigot().sendMessage(message);
-    }
-
     protected String colorize(String message) {
         return ChatColor.translateAlternateColorCodes('&', message);
     }
 
-    protected Player getPlayer() {
-        return isPlayer() ? (Player) sender : null;
+    protected UltraPlayer getPlayer() {
+        return isPlayer() ? (UltraPlayer) sender : null;
     }
 
     protected boolean isPlayer() {
@@ -397,7 +394,7 @@ public abstract class UltraCommand {
         return children;
     }
 
-    public CommandSender getSender() {
+    public UltraSender getSender() {
         return sender;
     }
 
@@ -422,6 +419,6 @@ public abstract class UltraCommand {
     }
 
     public void register() {
-        UltraCommandRegistry.register(this);
+        RegistrySpigot.register(this);
     }
 }

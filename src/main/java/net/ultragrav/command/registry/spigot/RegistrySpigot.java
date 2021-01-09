@@ -1,4 +1,4 @@
-package net.ultragrav.command.registry;
+package net.ultragrav.command.registry.spigot;
 
 import com.google.common.collect.Sets;
 import lombok.Getter;
@@ -12,7 +12,7 @@ import java.util.Map;
 import java.util.Set;
 
 @SuppressWarnings("unchecked")
-public final class UltraCommandRegistry {
+public final class RegistrySpigot {
     @Getter
     private static final Set<UltraCommand> registerCommand = Sets.newConcurrentHashSet();
 
@@ -26,7 +26,7 @@ public final class UltraCommandRegistry {
             for (String str : command.getAliases()) {
                 unregister(commandMap, str);
             }
-            commandMap.register(label, new UltraCommandExecutor(label, command));
+            commandMap.register(label, new ExecutorSpigot(label, command));
             registerCommand.add(command);
         } catch (Exception exception) {
             exception.printStackTrace();
