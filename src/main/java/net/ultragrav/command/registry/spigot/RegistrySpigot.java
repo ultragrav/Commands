@@ -3,6 +3,7 @@ package net.ultragrav.command.registry.spigot;
 import com.google.common.collect.Sets;
 import lombok.Getter;
 import net.ultragrav.command.UltraCommand;
+import net.ultragrav.command.registry.Registry;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandMap;
@@ -12,11 +13,11 @@ import java.util.Map;
 import java.util.Set;
 
 @SuppressWarnings("unchecked")
-public final class RegistrySpigot {
+public final class RegistrySpigot implements Registry {
     @Getter
     private static final Set<UltraCommand> registerCommand = Sets.newConcurrentHashSet();
 
-    public static void register(String label, UltraCommand command) {
+    public void register(String label, UltraCommand command) {
         try {
             Field commandMapField = Bukkit.getServer().getClass().getDeclaredField("commandMap");
             commandMapField.setAccessible(true);
@@ -33,7 +34,7 @@ public final class RegistrySpigot {
         }
     }
 
-    public static void unregister(CommandMap commandMap, String str) throws NoSuchFieldException, IllegalAccessException {
+    public void unregister(CommandMap commandMap, String str) throws NoSuchFieldException, IllegalAccessException {
         if (commandMap.getCommand(str) != null) {
             // Need to remove the command
             Field internalKnownCommandsField = commandMap.getClass().getDeclaredField("knownCommands");
@@ -44,7 +45,7 @@ public final class RegistrySpigot {
         }
     }
 
-    public static void register(UltraCommand command) {
+    public void register(UltraCommand command) {
         register(command.getAliases().get(0), command);
     }
 }
