@@ -24,6 +24,15 @@ public class RegistryManager {
             System.out.println("Could not instantiate Bungee registry");
             e.printStackTrace();
         }
+        try {
+            Class.forName("com.velocitypowered.api.proxy.ProxyServer");
+            Class<Registry> spReg = (Class<Registry>) Class.forName(rgn + ".velocity.RegistryVelocity");
+            return (Registry) spReg.getField("instance").get(null);
+        } catch (ClassNotFoundException ignored) {
+        } catch (IllegalAccessException | NoSuchFieldException e) {
+            System.out.println("Could not instantiate Bungee registry");
+            e.printStackTrace();
+        }
         throw new RuntimeException("Could not create a registry in the current environment, are you on a supported platform?");
     }
 
