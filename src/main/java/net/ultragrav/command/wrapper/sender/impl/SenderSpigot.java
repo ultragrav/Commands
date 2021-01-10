@@ -14,6 +14,11 @@ public class SenderSpigot implements UltraSender {
     }
 
     @Override
+    public Object getWrappedObject() {
+        return sender;
+    }
+
+    @Override
     public void sendMessage(String msg) {
         sender.sendMessage(msg);
     }
