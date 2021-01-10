@@ -68,7 +68,7 @@ public class ChatBuilder {
      * @return TextComponent
      */
     private TextComponent fromString(String text) {
-        return TextComponent.of(text);
+        return TextUtil.comp(text);
     }
 
     /**

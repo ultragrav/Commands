@@ -11,7 +11,7 @@ public class HoverUtil {
      * @return Hover event with text
      */
     public static HoverEvent text(String str) {
-        return new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponent.of(str));
+        return new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextUtil.comp(str));
     }
 
 //    /**
