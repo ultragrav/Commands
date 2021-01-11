@@ -21,13 +21,9 @@ public class ChatFormat {
     }
 
     public ChatFormat(String prefix, String primary, String secondary) {
-        this.prefix = color(prefix);
-        this.primary = color(primary);
-        this.secondary = color(secondary);
-    }
-
-    private static String color(String str) {
-        return TextUtil.color(str);
+        this.prefix = prefix;
+        this.primary = primary;
+        this.secondary = secondary;
     }
 
     public ChatFormat setPrefix(String prefix) {
@@ -35,7 +31,7 @@ public class ChatFormat {
     }
 
     public String format(String chat) {
-        return TextUtil.color(chat.replaceAll("#p", primary).replaceAll("#s", secondary));
+        return chat.replaceAll("#p", primary).replaceAll("#s", secondary);
     }
 
     public String formatPrefix(String chat) {

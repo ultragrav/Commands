@@ -7,7 +7,7 @@ import lombok.Setter;
 import net.ultragrav.command.exception.CommandException;
 import net.ultragrav.command.provider.UltraProvider;
 import net.ultragrav.command.registry.RegistryManager;
-import net.ultragrav.command.wrapper.chat.ChatColor;
+import net.ultragrav.command.wrapper.chat.TextUtil;
 import net.ultragrav.command.wrapper.player.UltraPlayer;
 import net.ultragrav.command.wrapper.sender.UltraSender;
 
@@ -330,11 +330,7 @@ public abstract class UltraCommand {
     }
 
     protected void tell(String message) {
-        sender.sendMessage(colorize(message));
-    }
-
-    protected String colorize(String message) {
-        return ChatColor.translateAlternateColorCodes('&', message);
+        sender.sendMessage(TextUtil.comp(message));
     }
 
     protected UltraPlayer getPlayer() {

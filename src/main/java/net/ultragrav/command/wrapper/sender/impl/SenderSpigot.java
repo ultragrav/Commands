@@ -1,5 +1,7 @@
 package net.ultragrav.command.wrapper.sender.impl;
 
+import net.kyori.text.Component;
+import net.ultragrav.command.wrapper.chat.impl.ConverterSpBg;
 import net.ultragrav.command.wrapper.sender.UltraSender;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -19,8 +21,8 @@ public class SenderSpigot implements UltraSender {
     }
 
     @Override
-    public void sendMessage(String msg) {
-        sender.sendMessage(msg);
+    public void sendMessage(Component msg) {
+        sender.spigot().sendMessage(ConverterSpBg.toSpBg(msg));
     }
 
     @Override

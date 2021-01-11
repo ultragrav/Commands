@@ -14,9 +14,4 @@ public class PlayerVelocity extends SenderVelocity implements UltraPlayer {
         super(player);
         this.player = player;
     }
-
-    @Override
-    public void sendMessage(Component comp) {
-        player.sendMessage(comp);
-    }
 }

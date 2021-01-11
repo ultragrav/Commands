@@ -7,11 +7,11 @@ import net.ultragrav.command.UltraCommand;
 import net.ultragrav.command.registry.Registry;
 import org.slf4j.Logger;
 
-@Plugin(id = "CommandInject", name = "CommandInject", version = "1.0-SNAPSHOT", description = "Velocity is dumb so this is required to inject commands", authors = {"UltraDev"})
+@Plugin(id = "commandinject", name = "CommandInject", version = "1.0-SNAPSHOT", description = "Velocity is dumb so this is required to inject commands", authors = {"UltraDev"})
 public class RegistryVelocity implements Registry {
     public static RegistryVelocity instance;
 
-    private ProxyServer server;
+    private final ProxyServer server;
 
     @Inject
     public RegistryVelocity(ProxyServer server, Logger logger) {

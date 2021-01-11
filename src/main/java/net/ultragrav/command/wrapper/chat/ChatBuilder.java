@@ -37,7 +37,7 @@ public class ChatBuilder {
      */
     public ChatBuilder(String text) {
         comp = fromString(text);
-        this.lastColours = ChatColor.getLastColors(ChatColor.translateAlternateColorCodes('&', text));
+        //this.lastColours = ChatColor.getLastColors(ChatColor.translateAlternateColorCodes('&', text));
     }
 
     /**
@@ -48,7 +48,7 @@ public class ChatBuilder {
     public ChatBuilder(ChatFormat format, String text) {
         this.format = format;
         comp = fromString(format.getPrefix() + text);
-        this.lastColours = ChatColor.getLastColors(ChatColor.translateAlternateColorCodes('&', text));
+        //this.lastColours = ChatColor.getLastColors(ChatColor.translateAlternateColorCodes('&', text));
     }
 
     /**

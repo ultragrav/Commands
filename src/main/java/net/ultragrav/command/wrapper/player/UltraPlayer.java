@@ -9,6 +9,4 @@ public interface UltraPlayer extends UltraSender {
     default boolean isPlayer() {
         return true;
     }
-
-    void sendMessage(Component comp);
 }
