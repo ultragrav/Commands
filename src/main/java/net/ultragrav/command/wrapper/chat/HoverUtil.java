@@ -1,18 +1,16 @@
 package net.ultragrav.command.wrapper.chat;
 
-import net.kyori.text.Component;
-import net.kyori.text.TextComponent;
 import net.kyori.text.event.HoverEvent;
 
 public class HoverUtil {
     /**
      * Generate a text hover
      *
-     * @param text Text
+     * @param str Text
      * @return Hover event with text
      */
-    public static HoverEvent text(Component text) {
-        return new HoverEvent(HoverEvent.Action.SHOW_TEXT, text);
+    public static HoverEvent text(String str) {
+        return new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextUtil.comp(str));
     }
 
 //    /**

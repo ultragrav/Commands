@@ -2,7 +2,6 @@ package net.ultragrav.command.registry;
 
 import net.ultragrav.command.UltraCommand;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,9 +34,7 @@ public class RegistryManager {
         try {
             Class.forName("com.velocitypowered.api.proxy.ProxyServer");
             Class<Registry> spReg = (Class<Registry>) Class.forName(rgn + ".velocity.RegistryVelocity");
-            Field inst = spReg.getDeclaredField("instance");
-            inst.setAccessible(true);
-            return (Registry) inst.get(null);
+            return (Registry) spReg.getField("instance").get(null);
         } catch (ClassNotFoundException ignored) {
         } catch (IllegalAccessException | NoSuchFieldException e) {
             System.out.println("Could not instantiate Velocity registry");
