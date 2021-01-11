@@ -1,8 +1,13 @@
 package net.ultragrav.command.registry.velocity;
 
+import com.google.inject.Inject;
+import com.velocitypowered.api.plugin.Plugin;
 import com.velocitypowered.api.proxy.ProxyServer;
+import com.velocitypowered.proxy.Velocity;
+import com.velocitypowered.proxy.VelocityServer;
 import net.ultragrav.command.UltraCommand;
 import net.ultragrav.command.registry.Registry;
+import org.slf4j.Logger;
 
 public class RegistryVelocity implements Registry {
     private static RegistryVelocity instance;
