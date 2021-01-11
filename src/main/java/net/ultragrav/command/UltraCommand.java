@@ -5,6 +5,8 @@ import com.google.common.collect.Sets;
 import lombok.Getter;
 import lombok.Setter;
 import net.kyori.text.Component;
+import net.kyori.text.TextComponent;
+import net.kyori.text.format.TextColor;
 import net.ultragrav.command.exception.CommandException;
 import net.ultragrav.command.provider.UltraProvider;
 import net.ultragrav.command.registry.RegistryManager;
@@ -41,10 +43,11 @@ public abstract class UltraCommand {
     @Getter
     private String helpFormat = "/<cmd> <args>";
     @Getter
-    private String helpHeader = "&cUsage:";
-
+    private Component helpHeader = TextComponent.builder()
+            .content("Usage:").color(TextColor.RED)
+            .build();
     @Getter
-    private String helpFooter = "";
+    private Component helpFooter = TextComponent.of("");
 
     /**
      * @param sender The person that executed this command either a player or the console.
@@ -154,7 +157,7 @@ public abstract class UltraCommand {
         return ret;
     }
 
-    public void setHelpFooter(String helpFooter) {
+    public void setHelpFooter(Component helpFooter) {
         this.helpFooter = helpFooter;
         this.getChildren().forEach(c -> c.setHelpFooter(helpFooter));
     }
@@ -164,7 +167,7 @@ public abstract class UltraCommand {
         this.getChildren().forEach(c -> c.setHelpFormat(helpFormat));
     }
 
-    public void setHelpHeader(String helpHeader) {
+    public void setHelpHeader(Component helpHeader) {
         this.helpHeader = helpHeader;
         this.getChildren().forEach(c -> c.setHelpHeader(helpHeader));
     }
@@ -334,7 +337,6 @@ public abstract class UltraCommand {
     protected void tell(String message) {
         tell(TextUtil.comp(message));
     }
-
     protected void tell(Component message) {
         sender.sendMessage(message);
     }
