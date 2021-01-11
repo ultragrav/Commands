@@ -16,7 +16,7 @@ public class ExecutorBungee extends Command implements TabExecutor {
     private final UltraCommand command;
 
     public ExecutorBungee(UltraCommand command) {
-        super(command.getAliases().get(0), command.getPermission(), command.getAliases().toArray(new String[0]));
+        super(command.getAliases().get(0), null, command.getAliases().toArray(new String[0]));
         this.command = command;
     }
 
