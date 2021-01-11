@@ -1,8 +1,9 @@
-package net.ultragrav.command.registry;
+package net.ultragrav.command.registry.spigot;
 
 import com.google.common.collect.Lists;
 import lombok.Getter;
 import net.ultragrav.command.UltraCommand;
+import net.ultragrav.command.util.ArrayUtils;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 
@@ -13,11 +14,11 @@ import java.util.List;
 /**
  * A wrapper for the UltraCommand class that allows it to be registered to bukkit.
  */
-public final class UltraCommandExecutor extends Command {
+public final class ExecutorSpigot extends Command {
 	@Getter
 	private final UltraCommand command;
 
-	public UltraCommandExecutor(String label, UltraCommand command) {
+	public ExecutorSpigot(String label, UltraCommand command) {
 		super(label);
 		this.command = command;
 		List<String> aliases = new ArrayList<>(command.getAliases());
@@ -27,22 +28,15 @@ public final class UltraCommandExecutor extends Command {
 
 	@Override
 	public boolean execute(final CommandSender sender, final String commandLabel, final String[] args) {
-		command.execute(sender, Lists.newArrayList(args));
+		command.execute(UtilSpigot.wrap(sender), Lists.newArrayList(args));
 		return false;
 	}
 
 
 	@Override
 	public List<String> tabComplete(final CommandSender sender, final String alias, final String[] rawArgs) throws IllegalArgumentException {
-		List<String> args = Lists.newArrayList();
-		for (int i = 0; i < rawArgs.length - 1; i++) {
-			String str = rawArgs[i];
-			if (str == null) continue;
-			if (str.isEmpty()) continue;
-			args.add(str);
-		}
-		args.add(rawArgs[rawArgs.length - 1]);
-		List<String> ret = this.getCommand().getTabCompletions(sender, args);
+		List<String> args = ArrayUtils.listNonNull(rawArgs);
+		List<String> ret = this.getCommand().getTabCompletions(UtilSpigot.wrap(sender), args);
 
 		int retSize = ret.size();
 		int maxSize = 20;

@@ -8,7 +8,6 @@ import lombok.RequiredArgsConstructor;
  */
 @RequiredArgsConstructor
 public final class CommandException extends RuntimeException {
-
 	private static final long serialVersionUID = 1L;
 
 	/**
@@ -16,5 +15,4 @@ public final class CommandException extends RuntimeException {
 	 */
 	@Getter
 	private final String message;
-
 }

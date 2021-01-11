@@ -4,13 +4,12 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import lombok.Getter;
 import lombok.Setter;
-import net.md_5.bungee.api.chat.BaseComponent;
 import net.ultragrav.command.exception.CommandException;
 import net.ultragrav.command.provider.UltraProvider;
-import net.ultragrav.command.registry.UltraCommandRegistry;
-import org.bukkit.ChatColor;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
+import net.ultragrav.command.registry.RegistryManager;
+import net.ultragrav.command.wrapper.chat.TextUtil;
+import net.ultragrav.command.wrapper.player.UltraPlayer;
+import net.ultragrav.command.wrapper.sender.UltraSender;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -34,7 +33,7 @@ public abstract class UltraCommand {
     // ----------------------------------- //
     // COMMAND EXECUTION
     // ----------------------------------- //
-    protected CommandSender sender;
+    protected UltraSender sender;
     protected List<String> args;
     private List<Parameter<?>> parameters = new ArrayList<>();
 
@@ -49,8 +48,7 @@ public abstract class UltraCommand {
      * @param sender The person that executed this command either a player or the console.
      * @param args   The arguments that are bound for this command.
      */
-    public void execute(CommandSender sender, List<String> args) {
-
+    public void execute(UltraSender sender, List<String> args) {
         this.sender = sender;
         this.args = args;
 
@@ -184,7 +182,7 @@ public abstract class UltraCommand {
      * @param args   The arguments provided.
      * @return Will return a list that will be sent to a player.
      */
-    public List<String> getTabCompletions(CommandSender sender, List<String> args) {
+    public List<String> getTabCompletions(UltraSender sender, List<String> args) {
         List<String> compl = new ArrayList<>();
         if (hasChildren()) {
             compl = getTabCompletionsSubCommand(sender, args);
@@ -195,7 +193,7 @@ public abstract class UltraCommand {
         return compl;
     }
 
-    private List<String> getTabCompletionsSubCommand(CommandSender sender, List<String> args) {
+    private List<String> getTabCompletionsSubCommand(UltraSender sender, List<String> args) {
         if (args.size() != 1) {
             UltraCommand child = this.getChild(args.get(0));
             if (child == null)
@@ -219,7 +217,7 @@ public abstract class UltraCommand {
         return ret;
     }
 
-    private List<String> getTabCompletionsArguments(CommandSender sender, List<String> args) {
+    private List<String> getTabCompletionsArguments(UltraSender sender, List<String> args) {
         int index = args.size() - 1;
 
         if (this.noParameterForIndex(index)) return Collections.emptyList();
@@ -332,23 +330,15 @@ public abstract class UltraCommand {
     }
 
     protected void tell(String message) {
-        sender.sendMessage(colorize(message));
+        sender.sendMessage(TextUtil.comp(message));
     }
 
-    protected void tell(BaseComponent message) {
-        sender.spigot().sendMessage(message);
-    }
-
-    protected String colorize(String message) {
-        return ChatColor.translateAlternateColorCodes('&', message);
-    }
-
-    protected Player getPlayer() {
-        return isPlayer() ? (Player) sender : null;
+    protected UltraPlayer getPlayer() {
+        return isPlayer() ? (UltraPlayer) sender : null;
     }
 
     protected boolean isPlayer() {
-        return sender instanceof Player;
+        return sender.isPlayer();
     }
 
     public Set<UltraCommand> getChildren(String label) {
@@ -397,7 +387,7 @@ public abstract class UltraCommand {
         return children;
     }
 
-    public CommandSender getSender() {
+    public UltraSender getSender() {
         return sender;
     }
 
@@ -422,6 +412,6 @@ public abstract class UltraCommand {
     }
 
     public void register() {
-        UltraCommandRegistry.register(this);
+        RegistryManager.register(this);
     }
 }

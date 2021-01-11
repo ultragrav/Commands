@@ -18,5 +18,4 @@ public abstract class UltraProvider<T> {
 	public T defaultNullValue() {
 		return null;
 	}
-
 }

@@ -1,5 +1,7 @@
 package net.ultragrav.command.util;
 
+import com.google.common.collect.Lists;
+
 import java.util.List;
 import java.util.function.Function;
 
@@ -18,5 +20,17 @@ public class ArrayUtils {
 
     public static <T extends Enum<T>> String[] enumName(T[] arr) {
         return convert(arr, T::name, String[]::new);
+    }
+
+    public static List<String> listNonNull(String[] strs) {
+        List<String> args = Lists.newArrayList();
+        for (int i = 0; i < strs.length - 1; i++) {
+            String str = strs[i];
+            if (str == null) continue;
+            if (str.isEmpty()) continue;
+            args.add(str);
+        }
+        args.add(strs[strs.length - 1]);
+        return args;
     }
 }

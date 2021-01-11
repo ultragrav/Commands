@@ -13,6 +13,6 @@ public class ExampleSubCommand extends UltraCommand {
 
     @Override
     protected void perform() {
-        getPlayer().teleport(getPlayer().getLocation().add(0, getArgument(0), 0));
+        //getPlayer().teleport(getPlayer().getLocation().add(0, getArgument(0), 0));
     }
 }
