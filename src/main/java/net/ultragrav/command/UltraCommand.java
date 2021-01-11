@@ -4,6 +4,9 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import lombok.Getter;
 import lombok.Setter;
+import net.kyori.text.Component;
+import net.kyori.text.TextComponent;
+import net.kyori.text.format.TextColor;
 import net.ultragrav.command.exception.CommandException;
 import net.ultragrav.command.provider.UltraProvider;
 import net.ultragrav.command.registry.RegistryManager;
@@ -40,9 +43,11 @@ public abstract class UltraCommand {
     @Getter
     private String helpFormat = "/<cmd> <args>";
     @Getter
-    private String helpHeader = "&cUsage:";
+    private Component helpHeader = TextComponent.builder()
+            .content("Usage:").color(TextColor.RED)
+            .build();
     @Getter
-    private String helpFooter = "";
+    private Component helpFooter = TextComponent.of("");
 
     /**
      * @param sender The person that executed this command either a player or the console.
@@ -54,7 +59,7 @@ public abstract class UltraCommand {
 
         try {
             if (isRequirePermission() && !sender.hasPermission(getPermission())) {
-                throw new CommandException("§cYou do not have permission to execute this command.");
+                throw new CommandException("&cYou do not have permission to execute this command.");
             }
 
             if (!isAllowConsole() && getPlayer() == null)
@@ -77,13 +82,13 @@ public abstract class UltraCommand {
 
             if (args.size() < getRequiredParameterCount() || args.size() > parameters.size()) {
                 sendHelp();
-                throw new CommandException("");
+                throw new CommandException(null);
             }
 
             this.perform();
         } catch (CommandException exception) {
-            // - This is our main exception to catch all of the little things mostly for parsing.
-            tell(exception.getMessage());
+            if (exception.getMessage() != null)
+                tell(exception.getMessage());
         } finally {
             // Clean up params.
             sender = null;
@@ -133,26 +138,26 @@ public abstract class UltraCommand {
             tell(helpFooter);
     }
 
-    public List<String> getHelp() {
+    public List<Component> getHelp() {
         return getHelp(helpFormat);
     }
 
-    public List<String> getHelp(String format) {
-        List<String> ret = new ArrayList<>();
+    public List<Component> getHelp(String format) {
+        List<Component> ret = new ArrayList<>();
         if (hasChildren()) {
             for (UltraCommand cmd : children) {
                 ret.addAll(cmd.getHelp(format));
             }
         }
-        ret.add(format.replace("<cmd>", getFullCommand())
+        ret.add(TextUtil.comp(format.replace("<cmd>", getFullCommand())
                 .replace("<desc>", getDescription())
                 .replace("<args>", getParameterDescriptions())
                 .replace("<params>", getParameterDescriptions())
-                .replace("<perm>", getPermission()));
+                .replace("<perm>", getPermission())));
         return ret;
     }
 
-    public void setHelpFooter(String helpFooter) {
+    public void setHelpFooter(Component helpFooter) {
         this.helpFooter = helpFooter;
         this.getChildren().forEach(c -> c.setHelpFooter(helpFooter));
     }
@@ -162,7 +167,7 @@ public abstract class UltraCommand {
         this.getChildren().forEach(c -> c.setHelpFormat(helpFormat));
     }
 
-    public void setHelpHeader(String helpHeader) {
+    public void setHelpHeader(Component helpHeader) {
         this.helpHeader = helpHeader;
         this.getChildren().forEach(c -> c.setHelpHeader(helpHeader));
     }
@@ -330,7 +335,10 @@ public abstract class UltraCommand {
     }
 
     protected void tell(String message) {
-        sender.sendMessage(TextUtil.comp(message));
+        tell(TextUtil.comp(message));
+    }
+    protected void tell(Component message) {
+        sender.sendMessage(message);
     }
 
     protected UltraPlayer getPlayer() {

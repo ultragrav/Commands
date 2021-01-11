@@ -3,7 +3,6 @@ package net.ultragrav.command.wrapper.sender.impl;
 import com.velocitypowered.api.command.CommandSource;
 import com.velocitypowered.api.proxy.Player;
 import net.kyori.text.Component;
-import net.ultragrav.command.wrapper.chat.ChatBuilder;
 import net.ultragrav.command.wrapper.sender.UltraSender;
 
 import java.util.UUID;

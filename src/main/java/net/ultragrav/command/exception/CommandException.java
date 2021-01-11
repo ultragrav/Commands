@@ -2,6 +2,7 @@ package net.ultragrav.command.exception;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import net.kyori.text.Component;
 
 /**
  * Used when we want to force stop our command, and the we can get the error message to send to the command sender.
