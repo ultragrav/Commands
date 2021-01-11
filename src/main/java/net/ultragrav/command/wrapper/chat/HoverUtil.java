@@ -1,6 +1,5 @@
 package net.ultragrav.command.wrapper.chat;
 
-import net.kyori.text.TextComponent;
 import net.kyori.text.event.HoverEvent;
 
 public class HoverUtil {
