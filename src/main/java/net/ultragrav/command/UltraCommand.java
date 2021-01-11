@@ -412,6 +412,6 @@ public abstract class UltraCommand {
     }
 
     public void register() {
-        RegistryManager.getCurrentRegistry().register(this);
+        RegistryManager.register(this);
     }
 }

@@ -1,8 +1,15 @@
 package net.ultragrav.command.registry;
 
+import net.ultragrav.command.UltraCommand;
+
+import java.util.ArrayList;
+import java.util.List;
+
 @SuppressWarnings("unchecked")
 public class RegistryManager {
     private static Registry activeRegistry;
+
+    private static List<UltraCommand> registerQueue = new ArrayList<>();
 
     private static Registry createRegistry() {
         String rgn = RegistryManager.class.getPackage().getName();
@@ -30,7 +37,7 @@ public class RegistryManager {
             return (Registry) spReg.getField("instance").get(null);
         } catch (ClassNotFoundException ignored) {
         } catch (IllegalAccessException | NoSuchFieldException e) {
-            System.out.println("Could not instantiate Bungee registry");
+            System.out.println("Could not instantiate Velocity registry");
             e.printStackTrace();
         }
         throw new RuntimeException("Could not create a registry in the current environment, are you on a supported platform?");
@@ -39,7 +46,22 @@ public class RegistryManager {
     public static Registry getCurrentRegistry() {
         if (activeRegistry == null) {
             activeRegistry = createRegistry();
+            if (activeRegistry != null) {
+                for (UltraCommand cmd : registerQueue) {
+                    activeRegistry.register(cmd);
+                }
+                registerQueue = null;
+            }
         }
         return activeRegistry;
+    }
+
+    public static void register(UltraCommand cmd) {
+        Registry reg = getCurrentRegistry();
+        if (reg == null) {
+            registerQueue.add(cmd);
+        } else {
+            reg.register(cmd);
+        }
     }
 }
