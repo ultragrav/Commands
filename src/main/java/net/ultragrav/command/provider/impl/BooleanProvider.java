@@ -1,6 +1,8 @@
 package net.ultragrav.command.provider.impl;
 
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import net.ultragrav.command.exception.CommandException;
 import net.ultragrav.command.provider.UltraProvider;
@@ -8,6 +10,7 @@ import net.ultragrav.command.provider.UltraProvider;
 import java.util.ArrayList;
 import java.util.List;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class BooleanProvider extends UltraProvider<Boolean> {
     @Getter
     private static final BooleanProvider instance = new BooleanProvider();

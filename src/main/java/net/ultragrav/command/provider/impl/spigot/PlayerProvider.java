@@ -1,7 +1,9 @@
 package net.ultragrav.command.provider.impl.spigot;
 
 import com.google.common.collect.Lists;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import net.ultragrav.command.exception.CommandException;
 import net.ultragrav.command.provider.UltraProvider;
@@ -10,6 +12,7 @@ import org.bukkit.entity.Player;
 
 import java.util.List;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class PlayerProvider extends UltraProvider<Player> {
 	@Getter
 	private static final PlayerProvider instance = new PlayerProvider();
