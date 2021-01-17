@@ -11,7 +11,7 @@ import java.util.Collection;
 public class ChatBuilder {
     private static final ChatFormat defaultFormat = new ChatFormat("", "&d", "&f");
 
-    private final Component comp;
+    private Component comp;
     private ChatFormat format = defaultFormat;
     private String lastColours = "";
 
@@ -78,7 +78,7 @@ public class ChatBuilder {
      * @return this
      */
     public ChatBuilder addComponent(Component component) {
-        comp.append(component);
+        comp = comp.append(component);
         return this;
     }
 
