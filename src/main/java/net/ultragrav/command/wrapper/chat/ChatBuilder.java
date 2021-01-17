@@ -110,8 +110,7 @@ public class ChatBuilder {
      * @return this
      */
     public ChatBuilder addText(String str, ClickEvent e) {
-        TextComponent c = fromString(str);
-        c.clickEvent(e);
+        TextComponent c = fromString(str).clickEvent(e);
         return addComponent(c);
     }
 
@@ -123,8 +122,7 @@ public class ChatBuilder {
      * @return this
      */
     public ChatBuilder addText(String str, HoverEvent e) {
-        TextComponent c = fromString(str);
-        c.hoverEvent(e);
+        TextComponent c = fromString(str).hoverEvent(e);
         return addComponent(c);
     }
 
@@ -137,9 +135,7 @@ public class ChatBuilder {
      * @return this
      */
     public ChatBuilder addText(String str, HoverEvent e, ClickEvent e2) {
-        TextComponent c = fromString(str);
-        c.hoverEvent(e);
-        c.clickEvent(e2);
+        TextComponent c = fromString(str).hoverEvent(e).clickEvent(e2);
         return addComponent(c);
     }
 
