@@ -141,6 +141,8 @@ public abstract class UltraCommand {
         List<String> ret = new ArrayList<>();
         if (hasChildren()) {
             for (UltraCommand cmd : children) {
+                if (cmd.requirePermission && !sender.hasPermission(cmd.getPermission()))
+                    continue;
                 ret.addAll(cmd.getHelp(format));
             }
         }
