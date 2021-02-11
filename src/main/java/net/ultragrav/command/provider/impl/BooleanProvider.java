@@ -10,6 +10,9 @@ import net.ultragrav.command.provider.UltraProvider;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Provider for boolean values (true/false)
+ */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class BooleanProvider extends UltraProvider<Boolean> {
     @Getter

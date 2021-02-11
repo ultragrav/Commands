@@ -12,6 +12,9 @@ import org.bukkit.entity.Player;
 
 import java.util.List;
 
+/**
+ * Provider for spigot players
+ */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class PlayerProvider extends UltraProvider<Player> {
 	@Getter

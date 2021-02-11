@@ -12,6 +12,9 @@ import org.bukkit.World;
 
 import java.util.List;
 
+/**
+ * Provider for spigot worlds
+ */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class WorldProvider extends UltraProvider<World> {
     @Getter

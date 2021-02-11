@@ -10,6 +10,11 @@ import net.ultragrav.command.provider.UltraProvider;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * Provider for a decimal number (double)
+ *
+ * Does not support tab completion
+ */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class DoubleProvider extends UltraProvider<Double> {
 	@Getter

@@ -11,6 +11,11 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * Provider for durations / time in multiple formats
+ *
+ * Does not support tab completion
+ */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class DurationProvider extends UltraProvider<Date> {
 	@Getter
@@ -28,7 +33,7 @@ public final class DurationProvider extends UltraProvider<Date> {
 					int h = Integer.parseInt(hours);
 					int m = Integer.parseInt(minutes);
 					int sec = Integer.parseInt(seconds);
-					return ((h * 60 + m) * 60 + sec) * 1000;
+					return ((h * 60L + m) * 60 + sec) * 1000;
 				} catch (NumberFormatException ex) {
 					return 0;
 				}
@@ -37,7 +42,7 @@ public final class DurationProvider extends UltraProvider<Date> {
 				try {
 					int h = Integer.parseInt(hours);
 					int m = Integer.parseInt(minutes);
-					return (h * 60 + m) * 60 * 1000;
+					return (h * 60L + m) * 60 * 1000;
 				} catch (NumberFormatException ex) {
 					return 0;
 				}
@@ -56,9 +61,9 @@ public final class DurationProvider extends UltraProvider<Date> {
 			return -1;
 		}
 
-		long hoursToMS = (h * 60 * 60 * 1000);
-		long minutesToMS = (m * 60 * 1000);
-		long secondsToMS = (s * 1000);
+		long hoursToMS = (h * 60 * 60 * 1000L);
+		long minutesToMS = (m * 60 * 1000L);
+		long secondsToMS = (s * 1000L);
 
 		return hoursToMS + minutesToMS + secondsToMS;
 	}
@@ -143,6 +148,4 @@ public final class DurationProvider extends UltraProvider<Date> {
 	public String getArgumentDescription() {
 		return "duration";
 	}
-
-
 }

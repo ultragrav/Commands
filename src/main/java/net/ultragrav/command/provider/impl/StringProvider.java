@@ -10,6 +10,12 @@ import net.ultragrav.command.provider.UltraProvider;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * Provider for a string
+ * Allows any string input (no checks are done)
+ *
+ * Does not support tab completion
+ */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class StringProvider extends UltraProvider<String> {
 	@Getter

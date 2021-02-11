@@ -10,6 +10,11 @@ import net.ultragrav.command.provider.UltraProvider;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * Provider for an integer number (integer)
+ *
+ * Does not support tab completion
+ */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class IntegerProvider extends UltraProvider<Integer> {
 	@Getter
