@@ -225,7 +225,7 @@ public abstract class UltraCommand {
         if (this.noParameterForIndex(index)) return Collections.emptyList();
         UltraProvider<?> provider = this.getParameters().get(index).getProvider();
 
-        return provider.tabComplete(args.get(index));
+        return provider.tabComplete(args.get(index), sender);
     }
 
     // ----------------------------------- //
