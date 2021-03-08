@@ -2,6 +2,7 @@ package net.ultragrav.command.provider;
 
 import lombok.NonNull;
 import net.ultragrav.command.exception.CommandException;
+import net.ultragrav.command.wrapper.sender.UltraSender;
 
 import java.util.List;
 
@@ -9,7 +10,14 @@ import java.util.List;
  * @param <T> Type to convert
  */
 public abstract class UltraProvider<T> {
-	public abstract T convert(@NonNull String toConvert) throws CommandException;
+	@Deprecated
+	public T convert(@NonNull String toConvert) {
+		return null;
+	}
+
+	public T convert(String toConvert, UltraSender sender) throws CommandException {
+		return convert(toConvert);
+	}
 
 	public abstract List<String> tabComplete(@NonNull String toComplete);
 

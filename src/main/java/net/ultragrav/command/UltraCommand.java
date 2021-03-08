@@ -243,7 +243,7 @@ public abstract class UltraCommand {
         String arg = null;
         if (this.isArgSet(index)) arg = this.getArgs().get(index);
 
-        return parameter.getProvider().convert(arg);
+        return parameter.getProvider().convert(arg, sender);
     }
 
     private boolean isArgSet(int idx) {
