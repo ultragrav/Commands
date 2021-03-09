@@ -30,6 +30,10 @@ public abstract class UltraCommand {
     @Setter
     @Getter
     protected boolean requirePermission = true;
+    @Setter
+    @Getter
+    protected boolean checkParams = true;
+
     // ----------------------------------- //
     // COMMAND EXECUTION
     // ----------------------------------- //
@@ -75,7 +79,7 @@ public abstract class UltraCommand {
                 } // If the subcommand isn't found, call this.preform() since it sends help
             }
 
-            if (args.size() < getRequiredParameterCount() || args.size() > parameters.size()) {
+            if (checkParams && (args.size() < getRequiredParameterCount() || args.size() > parameters.size())) {
                 sendHelp();
                 throw new CommandException("");
             }
