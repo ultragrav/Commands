@@ -39,7 +39,7 @@ public abstract class EnumProvider<T extends Enum<T>> extends UltraProvider<Enum
         }
         try {
             return Enum.valueOf(enumClass, n);
-        } catch (EnumConstantNotPresentException e) {
+        } catch (EnumConstantNotPresentException | IllegalArgumentException e) {
             throw new CommandException("No constant found: " + toConvert +
                     ", possible values: " + String.join(", ",
                     ArrayUtils.enumName(enumClass.getEnumConstants())));
