@@ -2,6 +2,7 @@ package net.ultragrav.command;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import net.ultragrav.command.exception.CommandException;
@@ -79,7 +80,10 @@ public abstract class UltraCommand {
                 } // If the subcommand isn't found, call this.preform() since it sends help
             }
 
-            if (checkParams && (args.size() < getRequiredParameterCount() || args.size() > parameters.size())) {
+            if (
+                    checkParams &&
+                            (args.size() < getRequiredParameterCount() || args.size() > parameters.size()) &&
+                            (parameters.size() > 0 && !parameters.get(args.size() - 1).isVarArg())) {
                 sendHelp();
                 throw new CommandException("");
             }
@@ -189,6 +193,8 @@ public abstract class UltraCommand {
      * @return Will return a list that will be sent to a player.
      */
     public List<String> getTabCompletions(UltraSender sender, List<String> args) {
+        if (requirePermission && !sender.hasPermission(getPermission()))
+            return new ArrayList<>();
         List<String> compl = new ArrayList<>();
         if (hasChildren()) {
             compl = getTabCompletionsSubCommand(sender, args);
@@ -226,7 +232,15 @@ public abstract class UltraCommand {
     private List<String> getTabCompletionsArguments(UltraSender sender, List<String> args) {
         int index = args.size() - 1;
 
-        if (this.noParameterForIndex(index)) return Collections.emptyList();
+        if (this.noParameterForIndex(index)) {
+            Parameter<?> param;
+            if (!this.parameters.isEmpty() && (param = this.parameters.get(this.parameters.size() - 1)).isVarArg()) {
+                return param.getProvider().tabComplete(args.get(index), sender);
+            } else {
+                return Collections.emptyList();
+            }
+        }
+
         UltraProvider<?> provider = this.getParameters().get(index).getProvider();
 
         return provider.tabComplete(args.get(index), sender);
@@ -239,10 +253,19 @@ public abstract class UltraCommand {
         if (this.noParameterForIndex(index))
             throw new IllegalArgumentException(index + " is out of range. Parameters size: " + this.getParameters().size());
 
-        Parameter<T> parameter = (Parameter<T>) this.getParameters().get(index);
+        Parameter<?> parameterU = this.getParameters().get(index);
+
+        if (parameterU.isVarArg()) {
+            List ret = new ArrayList<>();
+            for (int i = index; i < this.args.size(); i ++) {
+                ret.add(parameterU.getProvider().convert(args.get(i), sender));
+            }
+            return (T) ret;
+        }
+
+        Parameter<T> parameter = (Parameter<T>) parameterU;
 
         if (!this.isArgSet(index) && parameter.isDefaultValueSet()) return parameter.getDefaultValue();
-
 
         String arg = null;
         if (this.isArgSet(index)) arg = this.getArgs().get(index);
@@ -275,8 +298,20 @@ public abstract class UltraCommand {
         return parameter;
     }
 
+    /**
+     * @deprecated Use {@code Parameter.builder}
+     */
+    @Deprecated
+    protected <T> Parameter<T> addParameter(T defaultValue, UltraProvider<T> provider, String name, String description, boolean varArgs) {
+        return this.addParameter(new Parameter<>(defaultValue, provider, name, description, varArgs));
+    }
+
     protected <T> Parameter<T> addParameter(T defaultValue, UltraProvider<T> provider, String name, String description) {
         return this.addParameter(new Parameter<>(defaultValue, provider, name, description));
+    }
+
+    protected <T> Parameter<T> addParameter(UltraProvider<T> provider, String name, String description, boolean varArgs) {
+        return this.addParameter(new Parameter<>(provider, name, description, varArgs));
     }
 
     protected <T> Parameter<T> addParameter(UltraProvider<T> provider, String name, String description) {
@@ -289,6 +324,10 @@ public abstract class UltraCommand {
 
     protected <T> Parameter<T> addParameter(T defaultValue, UltraProvider<T> provider, String name) {
         return this.addParameter(new Parameter<>(defaultValue, provider, name));
+    }
+
+    protected <T> Parameter<T> addParameter(UltraProvider<T> provider, boolean varArgs) {
+        return this.addParameter(new Parameter<>(provider, varArgs));
     }
 
     protected <T> Parameter<T> addParameter(UltraProvider<T> provider) {

@@ -1,18 +1,24 @@
 package net.ultragrav.command;
 
+import lombok.*;
 import net.ultragrav.command.provider.UltraProvider;
 
+import java.lang.reflect.ParameterizedType;
+
+@Getter
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class Parameter<T> {
 	public static final String DEFAULT_DESC_DEFAULT = null;
 	public static final Object DEFAULT_VALUE_DEFAULT = null;
 
-	protected UltraProvider<T> provider;
-	protected String name = null;
-	protected String defaultDesc = null;
+	@Setter protected UltraProvider<T> provider;
+	@Setter protected String name = null;
+	@Setter protected String defaultDesc = null;
 	protected T defaultValue = null;
 	protected boolean defaultValueSet;
+	@Setter protected boolean varArg;
 
-	public Parameter(T defaultValue, UltraProvider<T> type, String name, String defaultDesc) {
+	public Parameter(T defaultValue, UltraProvider<T> type, String name, String defaultDesc, boolean varArgs) {
 		// Null checks
 		if (type == null) throw new IllegalArgumentException("type mustn't be null");
 		if (name == null) throw new IllegalArgumentException("name mustn't be null");
@@ -21,6 +27,19 @@ public class Parameter<T> {
 		this.setName(name);
 		this.setDefaultDesc(defaultDesc);
 		this.setDefaultValue(defaultValue);
+		this.setVarArg(varArgs);
+	}
+
+	public Parameter(T defaultValue, UltraProvider<T> type, String name, String defaultDesc) {
+		this(defaultValue, type, name, defaultDesc, false);
+	}
+
+	@SuppressWarnings("unchecked")
+	public Parameter(UltraProvider<T> type, String name, String defaultDesc, boolean varArgs) {
+		this((T) DEFAULT_VALUE_DEFAULT, type, name, defaultDesc, varArgs);
+
+		// In fact the default value is not set.
+		this.defaultValueSet = false;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -37,6 +56,10 @@ public class Parameter<T> {
 
 	public Parameter(T defaultValue, UltraProvider<T> type, String name) {
 		this(defaultValue, type, name, DEFAULT_DESC_DEFAULT);
+	}
+
+	public Parameter(UltraProvider<T> type, boolean varArgs) {
+		this(type, type.getArgumentDescription(), DEFAULT_DESC_DEFAULT, varArgs);
 	}
 
 	public Parameter(UltraProvider<T> type) {
@@ -65,40 +88,51 @@ public class Parameter<T> {
 	// GET
 	// ----------------------------------- //
 
-	public UltraProvider<T> getProvider() {
-		return provider;
-	}
-
-	public void setProvider(final UltraProvider<T> provider) {
-		this.provider = provider;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(final String name) {
-		this.name = name;
-	}
-
-	public String getDefaultDesc() {
-		return defaultDesc;
-	}
-
-	public void setDefaultDesc(final String defaultDesc) {
-		this.defaultDesc = defaultDesc;
-	}
-
-	public T getDefaultValue() {
-		return defaultValue;
-	}
-
 	public void setDefaultValue(final T defaultValue) {
 		this.defaultValue = defaultValue;
 		this.defaultValueSet = true;
 	}
 
-	public boolean isDefaultValueSet() {
-		return defaultValueSet;
+	public static <T> Builder<T> builder(UltraProvider<T> provider) {
+		return new Builder<>(provider);
+	}
+
+	public static class Builder<T> {
+		private UltraProvider<T> provider;
+		private String name;
+		private String defaultDesc = DEFAULT_DESC_DEFAULT;
+		private T defaultValue = (T) DEFAULT_VALUE_DEFAULT;
+		private boolean defaultValueSet = false;
+		private boolean varArg = false;
+
+		public Builder(UltraProvider<T> provider) {
+			this.provider = provider;
+			this.name = provider.getArgumentDescription();
+		}
+
+		public Builder<T> name(String name) {
+			this.name = name;
+			return this;
+		}
+
+		public Builder<T> desc(String defaultDesc) {
+			this.defaultDesc = defaultDesc;
+			return this;
+		}
+
+		public Builder<T> defaultValue(T def) {
+			this.defaultValue = def;
+			this.defaultValueSet = true;
+			return this;
+		}
+
+		public Builder<T> varArg(boolean varArg) {
+			this.varArg = varArg;
+			return this;
+		}
+
+		public Parameter<T> build() {
+			return new Parameter<>(provider, name, defaultDesc, defaultValue, defaultValueSet, varArg);
+		}
 	}
 }

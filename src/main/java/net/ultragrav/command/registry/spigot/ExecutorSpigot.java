@@ -38,11 +38,11 @@ public final class ExecutorSpigot extends Command {
 		List<String> args = ArrayUtils.listNonNull(rawArgs);
 		List<String> ret = this.getCommand().getTabCompletions(UtilSpigot.wrap(sender), args);
 
-		int retSize = ret.size();
-		int maxSize = 20;
-		if (retSize > maxSize) {
-			return Collections.emptyList();
-		}
+//		int retSize = ret.size();
+//		int maxSize = 20;
+//		if (retSize > maxSize) {
+//			return Collections.emptyList();
+//		}
 		return ret;
 	}
 }
