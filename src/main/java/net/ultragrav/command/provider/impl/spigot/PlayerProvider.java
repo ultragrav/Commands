@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import net.ultragrav.command.exception.CommandException;
 import net.ultragrav.command.provider.UltraProvider;
+import net.ultragrav.command.wrapper.sender.UltraSender;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -21,7 +22,7 @@ public final class PlayerProvider extends UltraProvider<Player> {
 	private static final PlayerProvider instance = new PlayerProvider();
 
 	@Override
-	public Player convert(@NonNull final String toConvert) throws CommandException {
+	public Player convert(@NonNull final String toConvert, UltraSender sender) throws CommandException {
 
 		Player player = Bukkit.getPlayer(toConvert);
 
@@ -33,7 +34,7 @@ public final class PlayerProvider extends UltraProvider<Player> {
 	}
 
 	@Override
-	public List<String> tabComplete(@NonNull final String toComplete) {
+	public List<String> tabComplete(@NonNull final String toComplete, UltraSender sender) {
 		List<String> toSend = Lists.newArrayList();
 
 		for (Player player : Bukkit.getOnlinePlayers())

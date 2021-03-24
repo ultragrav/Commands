@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import net.ultragrav.command.exception.CommandException;
 import net.ultragrav.command.provider.UltraProvider;
+import net.ultragrav.command.wrapper.sender.UltraSender;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 
@@ -21,7 +22,7 @@ public final class WorldProvider extends UltraProvider<World> {
     private static final WorldProvider instance = new WorldProvider();
 
     @Override
-    public World convert(@NonNull final String toConvert) throws CommandException {
+    public World convert(@NonNull final String toConvert, UltraSender sender) throws CommandException {
 
         World world = Bukkit.getWorld(toConvert);
 
@@ -32,7 +33,7 @@ public final class WorldProvider extends UltraProvider<World> {
     }
 
     @Override
-    public List<String> tabComplete(@NonNull final String toComplete) {
+    public List<String> tabComplete(@NonNull final String toComplete, UltraSender sender) {
 
         List<String> ret = Lists.newArrayList();
 

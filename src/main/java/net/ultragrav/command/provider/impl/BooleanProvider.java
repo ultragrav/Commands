@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import net.ultragrav.command.exception.CommandException;
 import net.ultragrav.command.provider.UltraProvider;
+import net.ultragrav.command.wrapper.sender.UltraSender;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +20,7 @@ public final class BooleanProvider extends UltraProvider<Boolean> {
     private static final BooleanProvider instance = new BooleanProvider();
 
     @Override
-    public Boolean convert(@NonNull String toConvert) throws CommandException {
+    public Boolean convert(@NonNull String toConvert, UltraSender sender) throws CommandException {
         try {
             return Boolean.parseBoolean(toConvert);
         } catch (NumberFormatException ex) {
@@ -28,7 +29,7 @@ public final class BooleanProvider extends UltraProvider<Boolean> {
     }
 
     @Override
-    public List<String> tabComplete(@NonNull String toComplete) {
+    public List<String> tabComplete(@NonNull String toComplete, UltraSender sender) {
         toComplete = toComplete.toLowerCase();
         List<String> ret = new ArrayList<>();
 

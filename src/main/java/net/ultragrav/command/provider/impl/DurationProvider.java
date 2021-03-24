@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import net.ultragrav.command.exception.CommandException;
 import net.ultragrav.command.provider.UltraProvider;
+import net.ultragrav.command.wrapper.sender.UltraSender;
 
 import java.util.Collections;
 import java.util.Date;
@@ -126,7 +127,7 @@ public final class DurationProvider extends UltraProvider<Date> {
 
 
 	@Override
-	public Date convert(@NonNull final String toConvert) throws CommandException {
+	public Date convert(@NonNull final String toConvert, UltraSender sender) throws CommandException {
 		try {
 			long l = smartParseDuration(toConvert);
 			if (l != -1) {
@@ -140,7 +141,7 @@ public final class DurationProvider extends UltraProvider<Date> {
 	}
 
 	@Override
-	public List<String> tabComplete(@NonNull final String toComplete) {
+	public List<String> tabComplete(@NonNull final String toComplete, UltraSender sender) {
 		return Collections.emptyList();
 	}
 

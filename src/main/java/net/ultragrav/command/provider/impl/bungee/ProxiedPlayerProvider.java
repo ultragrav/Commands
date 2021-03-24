@@ -7,6 +7,7 @@ import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.ultragrav.command.exception.CommandException;
 import net.ultragrav.command.provider.UltraProvider;
+import net.ultragrav.command.wrapper.sender.UltraSender;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -17,7 +18,7 @@ public final class ProxiedPlayerProvider extends UltraProvider<ProxiedPlayer> {
 	private static final ProxiedPlayerProvider instance = new ProxiedPlayerProvider();
 
 	@Override
-	public ProxiedPlayer convert(@NonNull final String toConvert) throws CommandException {
+	public ProxiedPlayer convert(@NonNull final String toConvert, UltraSender sender) throws CommandException {
 		ProxiedPlayer player = ProxyServer.getInstance().getPlayer(toConvert);
 
 		if (player != null && player.isConnected()) {
@@ -28,7 +29,7 @@ public final class ProxiedPlayerProvider extends UltraProvider<ProxiedPlayer> {
 	}
 
 	@Override
-	public List<String> tabComplete(@NonNull final String toComplete) {
+	public List<String> tabComplete(@NonNull final String toComplete, UltraSender sender) {
 		List<String> toSend = Lists.newArrayList();
 
 		for (ProxiedPlayer player : ProxyServer.getInstance().getPlayers())

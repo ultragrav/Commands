@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NonNull;
 import net.ultragrav.command.exception.CommandException;
 import net.ultragrav.command.provider.UltraProvider;
+import net.ultragrav.command.wrapper.sender.UltraSender;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
@@ -22,7 +23,7 @@ public class OfflinePlayerProvider extends UltraProvider<OfflinePlayer> {
     private OfflinePlayerProvider() {}
 
     @Override
-    public OfflinePlayer convert(@NonNull String s) throws CommandException {
+    public OfflinePlayer convert(@NonNull String s, UltraSender sender) throws CommandException {
         OfflinePlayer op = Bukkit.getOfflinePlayer(s);
         if (op == null) {
             throw new CommandException("&cPlayer not found.");
@@ -31,7 +32,7 @@ public class OfflinePlayerProvider extends UltraProvider<OfflinePlayer> {
     }
 
     @Override
-    public List<String> tabComplete(@NonNull String toComplete) {
+    public List<String> tabComplete(@NonNull String toComplete, UltraSender sender) {
         List<String> toSend = Lists.newArrayList();
 
         for (OfflinePlayer player : Bukkit.getOfflinePlayers())

@@ -2,7 +2,6 @@ package net.ultragrav.command;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import net.ultragrav.command.exception.CommandException;
@@ -257,7 +256,7 @@ public abstract class UltraCommand {
 
         if (parameterU.isVarArg()) {
             List ret = new ArrayList<>();
-            for (int i = index; i < this.args.size(); i ++) {
+            for (int i = index; i < this.args.size(); i++) {
                 ret.add(parameterU.getProvider().convert(args.get(i), sender));
             }
             return (T) ret;
@@ -299,43 +298,94 @@ public abstract class UltraCommand {
     }
 
     /**
-     * @deprecated Use {@code Parameter.builder}
+     * @deprecated use {@link #addParameter(Parameter)} with {@link Parameter#builder(UltraProvider)}
      */
     @Deprecated
     protected <T> Parameter<T> addParameter(T defaultValue, UltraProvider<T> provider, String name, String description, boolean varArgs) {
-        return this.addParameter(new Parameter<>(defaultValue, provider, name, description, varArgs));
+        return this.addParameter(Parameter.builder(provider)
+                .defaultValue(defaultValue)
+                .name(name).desc(description)
+                .varArg(varArgs).build()
+        );
     }
 
+    /**
+     * @deprecated use {@link #addParameter(Parameter)} with {@link Parameter#builder(UltraProvider)}
+     */
+    @Deprecated
     protected <T> Parameter<T> addParameter(T defaultValue, UltraProvider<T> provider, String name, String description) {
-        return this.addParameter(new Parameter<>(defaultValue, provider, name, description));
+        return this.addParameter(Parameter.builder(provider)
+                .defaultValue(defaultValue)
+                .name(name).desc(description)
+                .build()
+        );
     }
 
+    /**
+     * @deprecated use {@link #addParameter(Parameter)} with {@link Parameter#builder(UltraProvider)}
+     */
+    @Deprecated
     protected <T> Parameter<T> addParameter(UltraProvider<T> provider, String name, String description, boolean varArgs) {
-        return this.addParameter(new Parameter<>(provider, name, description, varArgs));
+        return this.addParameter(Parameter.builder(provider)
+                .name(name).desc(description)
+                .varArg(varArgs).build()
+        );
     }
 
+    /**
+     * @deprecated use {@link #addParameter(Parameter)} with {@link Parameter#builder(UltraProvider)}
+     */
+    @Deprecated
     protected <T> Parameter<T> addParameter(UltraProvider<T> provider, String name, String description) {
-        return this.addParameter(new Parameter<>(provider, name, description));
+        return this.addParameter(Parameter.builder(provider)
+                .name(name).desc(description)
+                .build()
+        );
     }
 
+    /**
+     * @deprecated use {@link #addParameter(Parameter)} with {@link Parameter#builder(UltraProvider)}
+     */
+    @Deprecated
     protected <T> Parameter<T> addParameter(UltraProvider<T> provider, String name) {
-        return this.addParameter(new Parameter<>(provider, name));
+        return this.addParameter(Parameter.builder(provider)
+                .name(name).build()
+        );
     }
 
+    /**
+     * @deprecated use {@link #addParameter(Parameter)} with {@link Parameter#builder(UltraProvider)}
+     */
+    @Deprecated
     protected <T> Parameter<T> addParameter(T defaultValue, UltraProvider<T> provider, String name) {
-        return this.addParameter(new Parameter<>(defaultValue, provider, name));
+        return this.addParameter(Parameter.builder(provider)
+                .defaultValue(defaultValue)
+                .name(name).build()
+        );
     }
 
+    /**
+     * @deprecated use {@link #addParameter(Parameter)} with {@link Parameter#builder(UltraProvider)}
+     */
+    @Deprecated
     protected <T> Parameter<T> addParameter(UltraProvider<T> provider, boolean varArgs) {
-        return this.addParameter(new Parameter<>(provider, varArgs));
+        return this.addParameter(Parameter.builder(provider).varArg(varArgs).build());
     }
 
+    /**
+     * @deprecated use {@link #addParameter(Parameter)} with {@link Parameter#builder(UltraProvider)}
+     */
+    @Deprecated
     protected <T> Parameter<T> addParameter(UltraProvider<T> provider) {
-        return this.addParameter(new Parameter<>(provider));
+        return this.addParameter(Parameter.builder(provider).build());
     }
 
+    /**
+     * @deprecated use {@link #addParameter(Parameter)} with {@link Parameter#builder(UltraProvider)}
+     */
+    @Deprecated
     protected <T> Parameter<T> addParameter(T defaultValue, UltraProvider<T> provider) {
-        return this.addParameter(new Parameter<>(defaultValue, provider));
+        return this.addParameter(Parameter.builder(provider).defaultValue(defaultValue).build());
     }
 
     protected boolean noParameterForIndex(int index) {

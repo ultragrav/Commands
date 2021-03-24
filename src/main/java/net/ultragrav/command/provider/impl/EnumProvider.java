@@ -4,6 +4,7 @@ import lombok.NonNull;
 import net.ultragrav.command.exception.CommandException;
 import net.ultragrav.command.provider.UltraProvider;
 import net.ultragrav.command.util.ArrayUtils;
+import net.ultragrav.command.wrapper.sender.UltraSender;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +28,7 @@ public abstract class EnumProvider<T extends Enum<T>> extends UltraProvider<Enum
     }
 
     @Override
-    public Enum<T> convert(@NonNull String toConvert) throws CommandException {
+    public Enum<T> convert(@NonNull String toConvert, UltraSender sender) throws CommandException {
         String n = toConvert;
         if (!caseSens) {
             T[] consts = enumClass.getEnumConstants();
@@ -47,7 +48,7 @@ public abstract class EnumProvider<T extends Enum<T>> extends UltraProvider<Enum
     }
 
     @Override
-    public List<String> tabComplete(@NonNull String toComplete) {
+    public List<String> tabComplete(@NonNull String toComplete, UltraSender sender) {
         List<String> ret = new ArrayList<>();
         for (T t : enumClass.getEnumConstants()) {
             if (t.name().toLowerCase().startsWith(toComplete)) {

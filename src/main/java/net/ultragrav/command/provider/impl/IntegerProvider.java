@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import net.ultragrav.command.exception.CommandException;
 import net.ultragrav.command.provider.UltraProvider;
+import net.ultragrav.command.wrapper.sender.UltraSender;
 
 import java.util.Collections;
 import java.util.List;
@@ -21,7 +22,7 @@ public final class IntegerProvider extends UltraProvider<Integer> {
 	private static final IntegerProvider instance = new IntegerProvider();
 
 	@Override
-	public Integer convert(@NonNull final String toConvert) throws CommandException {
+	public Integer convert(@NonNull final String toConvert, UltraSender sender) throws CommandException {
 		try {
 			return Integer.parseInt(toConvert);
 		} catch (NumberFormatException exception) {
@@ -30,7 +31,7 @@ public final class IntegerProvider extends UltraProvider<Integer> {
 	}
 
 	@Override
-	public List<String> tabComplete(@NonNull final String toComplete) {
+	public List<String> tabComplete(@NonNull final String toComplete, UltraSender sender) {
 		return Collections.emptyList();
 	}
 

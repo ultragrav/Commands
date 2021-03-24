@@ -29,46 +29,46 @@ public class Parameter<T> {
 		this.setDefaultValue(defaultValue);
 		this.setVarArg(varArgs);
 	}
-
-	public Parameter(T defaultValue, UltraProvider<T> type, String name, String defaultDesc) {
-		this(defaultValue, type, name, defaultDesc, false);
-	}
-
-	@SuppressWarnings("unchecked")
-	public Parameter(UltraProvider<T> type, String name, String defaultDesc, boolean varArgs) {
-		this((T) DEFAULT_VALUE_DEFAULT, type, name, defaultDesc, varArgs);
-
-		// In fact the default value is not set.
-		this.defaultValueSet = false;
-	}
-
-	@SuppressWarnings("unchecked")
-	public Parameter(UltraProvider<T> type, String name, String defaultDesc) {
-		this((T) DEFAULT_VALUE_DEFAULT, type, name, defaultDesc);
-
-		// In fact the default value is not set.
-		this.defaultValueSet = false;
-	}
-
-	public Parameter(UltraProvider<T> type, String name) {
-		this(type, name, DEFAULT_DESC_DEFAULT);
-	}
-
-	public Parameter(T defaultValue, UltraProvider<T> type, String name) {
-		this(defaultValue, type, name, DEFAULT_DESC_DEFAULT);
-	}
-
-	public Parameter(UltraProvider<T> type, boolean varArgs) {
-		this(type, type.getArgumentDescription(), DEFAULT_DESC_DEFAULT, varArgs);
-	}
-
-	public Parameter(UltraProvider<T> type) {
-		this(type, type.getArgumentDescription(), DEFAULT_DESC_DEFAULT);
-	}
-
-	public Parameter(T defaultValue, UltraProvider<T> type) {
-		this(defaultValue, type, type.getArgumentDescription());
-	}
+//
+//	public Parameter(T defaultValue, UltraProvider<T> type, String name, String defaultDesc) {
+//		this(defaultValue, type, name, defaultDesc, false);
+//	}
+//
+//	@SuppressWarnings("unchecked")
+//	public Parameter(UltraProvider<T> type, String name, String defaultDesc, boolean varArgs) {
+//		this((T) DEFAULT_VALUE_DEFAULT, type, name, defaultDesc, varArgs);
+//
+//		// In fact the default value is not set.
+//		this.defaultValueSet = false;
+//	}
+//
+//	@SuppressWarnings("unchecked")
+//	public Parameter(UltraProvider<T> type, String name, String defaultDesc) {
+//		this((T) DEFAULT_VALUE_DEFAULT, type, name, defaultDesc);
+//
+//		// In fact the default value is not set.
+//		this.defaultValueSet = false;
+//	}
+//
+//	public Parameter(UltraProvider<T> type, String name) {
+//		this(type, name, DEFAULT_DESC_DEFAULT);
+//	}
+//
+//	public Parameter(T defaultValue, UltraProvider<T> type, String name) {
+//		this(defaultValue, type, name, DEFAULT_DESC_DEFAULT);
+//	}
+//
+//	public Parameter(UltraProvider<T> type, boolean varArgs) {
+//		this(type, type.getArgumentDescription(), DEFAULT_DESC_DEFAULT, varArgs);
+//	}
+//
+//	public Parameter(UltraProvider<T> type) {
+//		this(type, type.getArgumentDescription(), DEFAULT_DESC_DEFAULT);
+//	}
+//
+//	public Parameter(T defaultValue, UltraProvider<T> type) {
+//		this(defaultValue, type, type.getArgumentDescription());
+//	}
 
 
 	// ----------------------------------- //
@@ -126,6 +126,12 @@ public class Parameter<T> {
 			return this;
 		}
 
+		/**
+		 * Set whether this Parameter is a vararg
+		 * Note: This only works on the last parameter of a command
+		 * @param varArg Is vararg
+		 * @return {@code this}
+		 */
 		public Builder<T> varArg(boolean varArg) {
 			this.varArg = varArg;
 			return this;
