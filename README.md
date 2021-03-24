@@ -43,4 +43,10 @@ public class ExampleSubCommand extends UltraCommand {
 }
 ```
 
+How to register:
+```java
+new ExampleCommand().register();
+```
+
+
 Full documentation coming soon
