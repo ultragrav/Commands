@@ -82,7 +82,7 @@ public abstract class UltraCommand {
             if (
                     checkParams &&
                             (args.size() < getRequiredParameterCount() || args.size() > parameters.size()) &&
-                            (parameters.size() > 0 && !parameters.get(args.size() - 1).isVarArg())) {
+                            !(parameters.size() > 0 && parameters.get(parameters.size() - 1).isVarArg() && args.size() >= parameters.size() - 1)) {
                 sendHelp();
                 throw new CommandException("");
             }
