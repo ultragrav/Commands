@@ -204,7 +204,7 @@ public abstract class UltraCommand {
 
     private List<String> getTabCompletionsSubCommand(UltraSender sender, List<String> args) {
         if (args.size() != 1) {
-            UltraCommand child = this.getChild(args.get(0));
+            UltraCommand child = this.matchExactChild(args.get(0));
             if (child == null)
                 return Collections.EMPTY_LIST;
 
