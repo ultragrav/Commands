@@ -69,12 +69,10 @@ public abstract class UltraCommand {
             if (hasChildren() && args.size() > 0) {
                 String label = args.get(0);
 
-                Set<UltraCommand> matches = this.getChildren(label);
-
-                if (matches.size() == 1) {
-                    UltraCommand command = matches.iterator().next();
+                UltraCommand child = matchExactChild(label);
+                if (child != null) {
                     args.remove(0);
-                    command.execute(sender, args);
+                    child.execute(sender, args);
                     return; // Don't perform the help on this command if a match is found
                 } // If the subcommand isn't found, call this.preform() since it sends help
             }
@@ -496,6 +494,19 @@ public abstract class UltraCommand {
 
     public void setAllowConsole(final boolean allowConsole) {
         this.allowConsole = allowConsole;
+    }
+
+    protected UltraCommand matchExactChild(String label) {
+        for (UltraCommand cmd : getChildren()) {
+            if (cmd == null)
+                continue;
+            for (String str : cmd.getAliases()) {
+                if (label.equalsIgnoreCase(str)) {
+                    return cmd;
+                }
+            }
+        }
+        return null;
     }
 
     protected UltraCommand getChild(String label) {
