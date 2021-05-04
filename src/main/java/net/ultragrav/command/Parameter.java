@@ -1,9 +1,10 @@
-package net.ultragrav.command.parameters;
+package net.ultragrav.command;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import net.ultragrav.command.parameters.ParameterCondition;
 import net.ultragrav.command.provider.UltraProvider;
 import net.ultragrav.command.wrapper.sender.UltraSender;
 

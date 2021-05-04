@@ -5,7 +5,6 @@ import com.google.common.collect.Sets;
 import lombok.Getter;
 import lombok.Setter;
 import net.ultragrav.command.exception.CommandException;
-import net.ultragrav.command.parameters.Parameter;
 import net.ultragrav.command.provider.UltraProvider;
 import net.ultragrav.command.registry.RegistryManager;
 import net.ultragrav.command.wrapper.chat.TextUtil;
