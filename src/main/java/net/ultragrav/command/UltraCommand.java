@@ -5,6 +5,7 @@ import com.google.common.collect.Sets;
 import lombok.Getter;
 import lombok.Setter;
 import net.ultragrav.command.exception.CommandException;
+import net.ultragrav.command.parameters.Parameter;
 import net.ultragrav.command.provider.UltraProvider;
 import net.ultragrav.command.registry.RegistryManager;
 import net.ultragrav.command.wrapper.chat.TextUtil;
@@ -252,12 +253,14 @@ public abstract class UltraCommand {
 
         Parameter<?> parameterU = this.getParameters().get(index);
 
-        if (parameterU.isVarArg()) {
-            List ret = new ArrayList<>();
-            for (int i = index; i < this.args.size(); i++) {
-                ret.add(parameterU.getProvider().convert(args.get(i), sender));
+        if (index + 1 == this.getParameters().size()) {
+            if (parameterU.isVarArg()) {
+                List ret = new ArrayList<>();
+                for (int i = index; i < this.args.size(); i++) {
+                    ret.add(parameterU.convert(args.get(i), sender));
+                }
+                return (T) ret;
             }
-            return (T) ret;
         }
 
         Parameter<T> parameter = (Parameter<T>) parameterU;
@@ -267,7 +270,7 @@ public abstract class UltraCommand {
         String arg = null;
         if (this.isArgSet(index)) arg = this.getArgs().get(index);
 
-        return parameter.getProvider().convert(arg, sender);
+        return parameter.convert(arg, sender);
     }
 
     private boolean isArgSet(int idx) {
