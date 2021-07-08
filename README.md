@@ -18,6 +18,7 @@ public class ExampleCommand extends UltraCommand {
 ```
 
 ExampleSubCommand.java
+
 ```java
 import net.ultragrav.command.Parameter;
 import net.ultragrav.command.UltraCommand;
@@ -30,14 +31,14 @@ public class ExampleSubCommand extends UltraCommand {
         this.addAlias("sub");
 
         this.setAllowConsole(false);
-        
+
         this.addParameter(Parameter.builder(StringProvider.getInstance()).name("message").varArg(true).build());
     }
 
     @Override
     protected void perform() {
         List<String> message = getArgument(0);
-        
+
         tell(String.join(" ", message));
     }
 }

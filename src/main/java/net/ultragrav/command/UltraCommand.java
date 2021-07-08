@@ -397,11 +397,12 @@ public abstract class UltraCommand {
     // Add aliases
 
     protected void addAlias(String alias) {
-        this.aliases.add(alias.toLowerCase());
+        if (!this.aliases.contains(alias.toLowerCase()))
+            this.aliases.add(alias.toLowerCase());
     }
 
-    private void addAliases(String... aliases) {
-        this.aliases.addAll(Arrays.stream(aliases).map(String::toLowerCase).collect(Collectors.toList()));
+    protected void addAliases(String... aliases) {
+        this.aliases.addAll(Arrays.stream(aliases).map(String::toLowerCase).filter(alias -> !this.aliases.contains(alias)).collect(Collectors.toList()));
     }
 
     // Add subcommands
