@@ -54,10 +54,10 @@ public class EZProvider<T> extends UltraProvider<T> {
                 }
                 if (found)
                     t = converter.apply(toConvert, sender);
-                if (t == null) {
-                    throw new CommandException("&cInvalid " + name + ": " + toConvert);
-                }
             }
+        }
+        if (t == null) {
+            throw new CommandException("&cInvalid " + name + ": " + toConvert);
         }
         return t;
     }
