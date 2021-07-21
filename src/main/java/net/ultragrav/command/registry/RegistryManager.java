@@ -40,7 +40,8 @@ public class RegistryManager {
             System.out.println("Could not instantiate Velocity registry");
             e.printStackTrace();
         }
-        throw new RuntimeException("Could not create a registry in the current environment, are you on a supported platform?");
+        return new CustomRegistry();
+        //throw new RuntimeException("Could not create a registry in the current environment, are you on a supported platform?");
     }
 
     public static Registry getCurrentRegistry() {
