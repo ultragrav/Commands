@@ -14,5 +14,7 @@ public interface UltraSender {
 
     UUID getUniqueId();
 
-    boolean isPlayer();
+    default boolean isPlayer() {
+        return false;
+    }
 }

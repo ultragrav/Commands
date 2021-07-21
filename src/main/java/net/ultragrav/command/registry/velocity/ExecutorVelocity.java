@@ -29,11 +29,11 @@ public class ExecutorVelocity implements Command {
         List<String> args = ArrayUtils.listNonNull(currentArgs);
         List<String> ret = this.getCommand().getTabCompletions(UtilVelocity.wrap(source), args);
 
-        int retSize = ret.size();
-        int maxSize = 20;
-        if (retSize > maxSize) {
-            return Collections.emptyList();
-        }
+//        int retSize = ret.size();
+//        int maxSize = 20;
+//        if (retSize > maxSize) {
+//            return Collections.emptyList();
+//        }
         return ret;
     }
 }

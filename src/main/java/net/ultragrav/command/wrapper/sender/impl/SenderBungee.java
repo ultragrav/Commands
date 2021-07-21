@@ -34,9 +34,4 @@ public class SenderBungee implements UltraSender {
     public UUID getUniqueId() {
         return sender instanceof ProxiedPlayer ? ((ProxiedPlayer) sender).getUniqueId() : null;
     }
-
-    @Override
-    public boolean isPlayer() {
-        return sender instanceof ProxiedPlayer;
-    }
 }

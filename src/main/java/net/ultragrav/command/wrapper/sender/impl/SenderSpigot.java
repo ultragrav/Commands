@@ -34,9 +34,4 @@ public class SenderSpigot implements UltraSender {
     public UUID getUniqueId() {
         return sender instanceof Player ? ((Player) sender).getUniqueId() : null;
     }
-
-    @Override
-    public boolean isPlayer() {
-        return sender instanceof Player;
-    }
 }

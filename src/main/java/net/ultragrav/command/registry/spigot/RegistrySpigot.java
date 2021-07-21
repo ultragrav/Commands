@@ -17,7 +17,7 @@ public final class RegistrySpigot implements Registry {
     @Getter
     private static final Set<UltraCommand> registerCommand = Sets.newConcurrentHashSet();
 
-    public void register(String label, UltraCommand command) {
+    private void register(String label, UltraCommand command) {
         try {
             Field commandMapField = Bukkit.getServer().getClass().getDeclaredField("commandMap");
             commandMapField.setAccessible(true);
@@ -34,7 +34,7 @@ public final class RegistrySpigot implements Registry {
         }
     }
 
-    public void unregister(CommandMap commandMap, String str) throws NoSuchFieldException, IllegalAccessException {
+    private void unregister(CommandMap commandMap, String str) throws NoSuchFieldException, IllegalAccessException {
         if (commandMap.getCommand(str) != null) {
             // Need to remove the command
             Field internalKnownCommandsField = commandMap.getClass().getDeclaredField("knownCommands");

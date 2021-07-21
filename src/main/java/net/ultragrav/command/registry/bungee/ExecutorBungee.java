@@ -30,11 +30,11 @@ public class ExecutorBungee extends Command implements TabExecutor {
         List<String> args = ArrayUtils.listNonNull(strings);
         List<String> ret = this.getCommand().getTabCompletions(UtilBungee.wrap(commandSender), args);
 
-        int retSize = ret.size();
-        int maxSize = 20;
-        if (retSize > maxSize) {
-            return Collections.emptyList();
-        }
+//        int retSize = ret.size();
+//        int maxSize = 20;
+//        if (retSize > maxSize) {
+//            return Collections.emptyList();
+//        }
         return ret;
     }
 }
