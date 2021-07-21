@@ -15,27 +15,33 @@ import java.util.function.Function;
 public class EZProvider<T> extends UltraProvider<T> {
     private String name;
     private Function<UltraSender, ? extends Collection<String>> lister;
-    private BiFunction<String, UltraSender, T> converter;
+    private BiFunction<String, UltraSender, ? extends T> converter;
 
     @Setter
     private boolean caseCorrect = true;
 
-    public EZProvider(String name, Function<UltraSender, ? extends Collection<String>> lister, BiFunction<String, UltraSender, T> converter) {
+    public EZProvider(String name, Function<UltraSender, ? extends Collection<String>> lister, BiFunction<String, UltraSender, ? extends T> converter) {
         this.name = name;
         this.lister = lister;
         this.converter = converter;
     }
 
-    public EZProvider(String name, Function<UltraSender, Map<String, T>> method) {
+    public EZProvider(String name, Function<UltraSender, Map<String, ? extends T>> method) {
         this.name = name;
         this.lister = pl -> method.apply(pl).keySet();
         this.converter = (str, pl) -> method.apply(pl).get(str);
     }
 
-    public EZProvider(String name, Map<String, T> map) {
+    public EZProvider(String name, Map<String, ? extends T> map) {
         this.name = name;
         this.lister = pl -> map.keySet();
         this.converter = (str, pl) -> map.get(str);
+    }
+
+    public EZProvider(String name, List<String> els, Function<String, ? extends T> converter) {
+        this.name = name;
+        this.lister = pl -> els;
+        this.converter = (str, pl) -> converter.apply(str);
     }
 
     @Override
