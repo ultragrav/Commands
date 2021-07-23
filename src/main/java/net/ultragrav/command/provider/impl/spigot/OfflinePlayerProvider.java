@@ -25,7 +25,7 @@ public class OfflinePlayerProvider extends UltraProvider<OfflinePlayer> {
     @Override
     public OfflinePlayer convert(@NonNull String s, UltraSender sender) throws CommandException {
         OfflinePlayer op = Bukkit.getOfflinePlayer(s);
-        if (op == null) {
+        if (op == null || !op.hasPlayedBefore()) {
             throw new CommandException("&cPlayer not found.");
         }
         return op;
@@ -36,7 +36,7 @@ public class OfflinePlayerProvider extends UltraProvider<OfflinePlayer> {
         List<String> toSend = Lists.newArrayList();
 
         for (OfflinePlayer player : Bukkit.getOfflinePlayers())
-            if (player.getName().toLowerCase().startsWith(toComplete))
+            if (player.hasPlayedBefore() && player.getName().toLowerCase().startsWith(toComplete))
                 toSend.add(player.getName());
 
         return toSend;
