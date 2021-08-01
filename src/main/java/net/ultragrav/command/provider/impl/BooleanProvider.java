@@ -9,6 +9,7 @@ import net.ultragrav.command.provider.UltraProvider;
 import net.ultragrav.command.wrapper.sender.UltraSender;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -31,17 +32,10 @@ public final class BooleanProvider extends UltraProvider<Boolean> {
     @Override
     public List<String> tabComplete(@NonNull String toComplete, UltraSender sender) {
         toComplete = toComplete.toLowerCase();
-        List<String> ret = new ArrayList<>();
 
-        String[] poss = {"true", "false"};
-
-        for (String str : poss) {
-            if (str.startsWith(toComplete)) {
-                ret.add(str);
-            }
-        }
-
-        return ret;
+        if ("true".startsWith(toComplete)) return Collections.singletonList("true");
+        if ("false".startsWith(toComplete)) return Collections.singletonList("false");
+        return Collections.emptyList();
     }
 
     @Override
