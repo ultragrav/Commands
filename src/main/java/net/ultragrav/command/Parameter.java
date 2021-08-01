@@ -10,6 +10,7 @@ import net.ultragrav.command.wrapper.sender.UltraSender;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 @Getter
@@ -66,9 +67,18 @@ public class Parameter<T> {
         private boolean varArg = false;
         private List<ParameterCondition<T>> conditions = new ArrayList<>();
 
+        private final Consumer<Parameter<T>> onBuild;
+
+        Builder(UltraProvider<T> provider, Consumer<Parameter<T>> onBuild) {
+            this.provider = provider;
+            this.name = provider.getArgumentDescription();
+            this.onBuild = onBuild;
+        }
+
         public Builder(UltraProvider<T> provider) {
             this.provider = provider;
             this.name = provider.getArgumentDescription();
+            this.onBuild = null;
         }
 
         /**
@@ -126,7 +136,11 @@ public class Parameter<T> {
         }
 
         public Parameter<T> build() {
-            return new Parameter<>(provider, name, defaultDesc, defaultValue, defaultValueSet, varArg, conditions);
+            Parameter<T> param = new Parameter<>(provider, name, defaultDesc, defaultValue, defaultValueSet, varArg, conditions);
+            if (this.onBuild != null) {
+                this.onBuild.accept(param);
+            }
+            return param;
         }
     }
 }

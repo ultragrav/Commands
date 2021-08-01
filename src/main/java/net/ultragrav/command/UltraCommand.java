@@ -292,10 +292,27 @@ public abstract class UltraCommand {
         return ret;
     }
 
-    // Add parameter
+    /**
+     * Add a parameter
+     *
+     * @param parameter Parameter
+     * @param <T>       Type
+     * @return {@code parameter}
+     */
     protected <T> Parameter<T> addParameter(Parameter<T> parameter) {
         this.getParameters().add(parameter);
         return parameter;
+    }
+
+    /**
+     * Create a parameter builder
+     *
+     * @param provider
+     * @param <T>
+     * @return Parameter.Builder for provider
+     */
+    protected <T> Parameter.Builder<T> parameterBuilder(UltraProvider<T> provider) {
+        return new Parameter.Builder<T>(provider, this::addParameter);
     }
 
     /**
@@ -436,6 +453,7 @@ public abstract class UltraCommand {
     protected void tell(String message) {
         sender.sendMessage(TextUtil.comp(message));
     }
+
     protected void tell(Component comp) {
         sender.sendMessage(comp);
     }
