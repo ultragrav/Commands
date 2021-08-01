@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import lombok.Getter;
 import lombok.Setter;
+import net.kyori.text.Component;
 import net.ultragrav.command.exception.CommandException;
 import net.ultragrav.command.provider.UltraProvider;
 import net.ultragrav.command.registry.RegistryManager;
@@ -421,12 +422,22 @@ public abstract class UltraCommand {
     // UTILS
     // ----------------------------------- //
 
+    /**
+     * Send a message and return
+     *
+     * @param message Message
+     * @deprecated Prefer using tell and the return to allow IDEs to read code flow!
+     */
+    @Deprecated
     protected void returnTell(String message) {
         throw new CommandException(message);
     }
 
     protected void tell(String message) {
         sender.sendMessage(TextUtil.comp(message));
+    }
+    protected void tell(Component comp) {
+        sender.sendMessage(comp);
     }
 
     protected UltraPlayer getPlayer() {
