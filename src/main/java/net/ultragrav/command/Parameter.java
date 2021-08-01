@@ -53,15 +53,6 @@ public class Parameter<T> {
         return obj;
     }
 
-    // ----------------------------------- //
-    // GET
-    // ----------------------------------- //
-
-    public void setDefaultValue(final T defaultValue) {
-        this.defaultValue = defaultValue;
-        this.defaultValueSet = true;
-    }
-
     public static <T> Builder<T> builder(UltraProvider<T> provider) {
         return new Builder<>(provider);
     }
@@ -80,6 +71,12 @@ public class Parameter<T> {
             this.name = provider.getArgumentDescription();
         }
 
+        /**
+         * Set the parameter name
+         *
+         * @param name Name
+         * @return {@code this}
+         */
         public Builder<T> name(String name) {
             this.name = name;
             return this;
@@ -90,6 +87,14 @@ public class Parameter<T> {
             return this;
         }
 
+        /**
+         * Set the default value of the parameter
+         * This makes the parameter optional
+         * Note: Optional parameters should all be at the end of the parameter list
+         *
+         * @param def Default value
+         * @return {@code this}
+         */
         public Builder<T> defaultValue(T def) {
             this.defaultValue = def;
             this.defaultValueSet = true;
