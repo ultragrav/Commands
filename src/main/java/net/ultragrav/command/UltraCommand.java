@@ -16,23 +16,26 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @SuppressWarnings("unchecked")
+@Getter
 public abstract class UltraCommand {
+    private static final String DEFAULT_HELP_FORMAT = "/<cmd> <args>";
+    private static final String DEFAULT_HELP_HEADER = "&cUsage:";
+    private static final String DEFAULT_HELP_FOOTER = "";
+
     // ----------------------------------- //
     // COMMAND INFORMATION
     // ----------------------------------- //
-    @Getter
-    protected List<String> aliases = new ArrayList<>();
-    protected Set<UltraCommand> children = Sets.newHashSet();
-    @Getter
+    protected final List<String> aliases = new ArrayList<>();
+    protected final Set<UltraCommand> children = Sets.newHashSet();
     @Setter
     protected UltraCommand parent;
+    @Setter
     protected String description = "";
+    @Setter
     protected boolean allowConsole = true;
     @Setter
-    @Getter
     protected boolean requirePermission = true;
     @Setter
-    @Getter
     protected boolean checkParams = true;
 
     // ----------------------------------- //
@@ -40,14 +43,15 @@ public abstract class UltraCommand {
     // ----------------------------------- //
     protected UltraSender sender;
     protected List<String> args;
+    @Setter
     private List<Parameter<?>> parameters = new ArrayList<>();
 
-    @Getter
-    private String helpFormat = "/<cmd> <args>";
-    @Getter
-    private String helpHeader = "&cUsage:";
-    @Getter
-    private String helpFooter = "";
+    @Setter
+    private String helpFormat = null;
+    @Setter
+    private String helpHeader = null;
+    @Setter
+    private String helpFooter = null;
 
     /**
      * @param sender The person that executed this command either a player or the console.
@@ -160,19 +164,20 @@ public abstract class UltraCommand {
         return ret;
     }
 
-    public void setHelpFooter(String helpFooter) {
-        this.helpFooter = helpFooter;
-        this.getChildren().forEach(c -> c.setHelpFooter(helpFooter));
+    public String getHelpFooter() {
+        if (this.helpFooter != null) return this.helpFooter;
+        if (parent != null) return parent.getHelpFooter();
+        return DEFAULT_HELP_FOOTER;
     }
-
-    public void setHelpFormat(String helpFormat) {
-        this.helpFormat = helpFormat;
-        this.getChildren().forEach(c -> c.setHelpFormat(helpFormat));
+    public String getHelpHeader() {
+        if (this.helpHeader != null) return this.helpHeader;
+        if (parent != null) return parent.getHelpHeader();
+        return DEFAULT_HELP_HEADER;
     }
-
-    public void setHelpHeader(String helpHeader) {
-        this.helpHeader = helpHeader;
-        this.getChildren().forEach(c -> c.setHelpHeader(helpHeader));
+    public String getHelpFormat() {
+        if (this.helpFormat != null) return this.helpFormat;
+        if (parent != null) return parent.getHelpFormat();
+        return DEFAULT_HELP_FORMAT;
     }
 
     public String getPermission() {
@@ -483,49 +488,8 @@ public abstract class UltraCommand {
         return ret;
     }
 
-    // ----------------------------------- //
-    // COMMAND SETTINGS
-    // ----------------------------------- //
-
-
-    public String getDescription() {
-        return this.description;
-    }
-
-    protected void setDescription(String description) {
-        this.description = description;
-    }
-
     public boolean hasChildren() {
         return !this.children.isEmpty();
-    }
-
-    public List<Parameter<?>> getParameters() {
-        return parameters;
-    }
-
-    public void setParameters(final List<Parameter<?>> parameters) {
-        this.parameters = parameters;
-    }
-
-    public Set<UltraCommand> getChildren() {
-        return children;
-    }
-
-    public UltraSender getSender() {
-        return sender;
-    }
-
-    public List<String> getArgs() {
-        return args;
-    }
-
-    public boolean isAllowConsole() {
-        return allowConsole;
-    }
-
-    public void setAllowConsole(final boolean allowConsole) {
-        this.allowConsole = allowConsole;
     }
 
     protected UltraCommand matchExactChild(String label) {
