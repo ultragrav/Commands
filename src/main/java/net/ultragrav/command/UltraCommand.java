@@ -136,15 +136,15 @@ public abstract class UltraCommand {
     }
 
     public void sendHelp() {
-        if (helpHeader != null)
-            tell(helpHeader);
+        if (getHelpHeader() != null)
+            tell(getHelpHeader());
         getHelp().forEach(this::tell);
-        if (helpFooter != null)
-            tell(helpFooter);
+        if (getHelpFooter() != null)
+            tell(getHelpFooter());
     }
 
     public List<String> getHelp() {
-        return getHelp(helpFormat);
+        return getHelp(getHelpFormat());
     }
 
     public List<String> getHelp(String format) {
@@ -432,12 +432,6 @@ public abstract class UltraCommand {
 
     public void addChildren(UltraCommand... commands) {
         this.children.addAll(Arrays.asList(commands));
-        for (UltraCommand command : commands) {
-            command.setParent(this);
-            command.setHelpHeader(this.helpHeader);
-            command.setHelpFooter(this.helpFooter);
-            command.setHelpFormat(this.helpFormat);
-        }
     }
 
     // ----------------------------------- //
