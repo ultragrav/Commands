@@ -153,6 +153,7 @@ public abstract class UltraCommand {
             for (UltraCommand cmd : children) {
                 if (cmd.requirePermission && !sender.hasPermission(cmd.getPermission()))
                     continue;
+                cmd.sender = sender;
                 ret.addAll(cmd.getHelp(format));
             }
         }
