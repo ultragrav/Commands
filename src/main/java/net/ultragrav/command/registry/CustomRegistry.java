@@ -2,7 +2,6 @@ package net.ultragrav.command.registry;
 
 import lombok.Getter;
 import net.ultragrav.command.UltraCommand;
-import net.ultragrav.command.wrapper.chat.ChatBuilder;
 import net.ultragrav.command.wrapper.sender.UltraSender;
 
 import java.util.ArrayList;

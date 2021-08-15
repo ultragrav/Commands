@@ -1,7 +1,9 @@
 package net.ultragrav.command.wrapper.sender.impl;
 
-import net.kyori.text.Component;
-import net.ultragrav.command.wrapper.chat.impl.ConverterSpBg;
+import net.ultragrav.chat.components.Component;
+import net.ultragrav.chat.converters.BungeeConverter;
+import net.ultragrav.chat.converters.BungeeTextConverter;
+import net.ultragrav.chat.converters.LegacyConverter;
 import net.ultragrav.command.wrapper.sender.UltraSender;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -9,6 +11,8 @@ import org.bukkit.entity.Player;
 import java.util.UUID;
 
 public class SenderSpigot implements UltraSender {
+    public static boolean componentSender = false;
+
     private CommandSender sender;
 
     public SenderSpigot(CommandSender sender) {
@@ -22,7 +26,11 @@ public class SenderSpigot implements UltraSender {
 
     @Override
     public void sendMessage(Component msg) {
-        sender.spigot().sendMessage(ConverterSpBg.toSpBg(msg));
+        if (componentSender) {
+            sender.spigot().sendMessage(BungeeTextConverter.INSTANCE.convert(msg));
+        } else {
+            sender.sendMessage(LegacyConverter.MINECRAFT.convert(msg));
+        }
     }
 
     @Override

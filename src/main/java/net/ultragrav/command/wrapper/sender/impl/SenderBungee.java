@@ -1,9 +1,9 @@
 package net.ultragrav.command.wrapper.sender.impl;
 
-import net.kyori.text.Component;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
-import net.ultragrav.command.wrapper.chat.impl.ConverterSpBg;
+import net.ultragrav.chat.components.Component;
+import net.ultragrav.chat.converters.BungeeConverter;
 import net.ultragrav.command.wrapper.sender.UltraSender;
 
 import java.util.UUID;
@@ -22,7 +22,7 @@ public class SenderBungee implements UltraSender {
 
     @Override
     public void sendMessage(Component msg) {
-        sender.sendMessage(ConverterSpBg.toSpBg(msg));
+        sender.sendMessage(BungeeConverter.INSTANCE.convert(msg));
     }
 
     @Override

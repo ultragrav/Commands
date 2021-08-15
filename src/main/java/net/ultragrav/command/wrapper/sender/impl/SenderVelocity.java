@@ -2,8 +2,7 @@ package net.ultragrav.command.wrapper.sender.impl;
 
 import com.velocitypowered.api.command.CommandSource;
 import com.velocitypowered.api.proxy.Player;
-import net.kyori.text.Component;
-import net.ultragrav.command.wrapper.chat.ChatBuilder;
+import net.ultragrav.chat.components.Component;
 import net.ultragrav.command.wrapper.sender.UltraSender;
 
 import java.util.UUID;
@@ -22,7 +21,7 @@ public class SenderVelocity implements UltraSender {
 
     @Override
     public void sendMessage(Component msg) {
-        sender.sendMessage(msg);
+//        sender.sendMessage(msg); TODO: Component converter in McChat
     }
 
     @Override

@@ -12,7 +12,7 @@
 
     <groupId>net.ultragrav</groupId>
     <artifactId>Commands</artifactId>
-    <version>1.4.0</version>
+    <version>1.4.1</version>
 
     <build>
         <plugins>
@@ -64,12 +64,18 @@
             <artifactId>velocity-api</artifactId>
             <version>1.0-SNAPSHOT</version>
             <scope>provided</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>net.kyori</groupId>
+                    <artifactId>text</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>
-            <groupId>net.kyori</groupId>
-            <artifactId>text</artifactId>
-            <version>1.12-1.0.0</version>
+            <groupId>net.ultragrav</groupId>
+            <artifactId>McChat</artifactId>
+            <version>1.0.0</version>
         </dependency>
     </dependencies>
 </project>

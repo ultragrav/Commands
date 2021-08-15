@@ -2,7 +2,7 @@ package net.ultragrav.command.wrapper.sender;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import net.kyori.text.Component;
+import net.ultragrav.chat.components.Component;
 
 import java.util.UUID;
 

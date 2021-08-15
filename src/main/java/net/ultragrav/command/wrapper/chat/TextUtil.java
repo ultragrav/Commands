@@ -1,16 +1,17 @@
 package net.ultragrav.command.wrapper.chat;
 
-import net.kyori.text.Component;
-import net.kyori.text.TextComponent;
+import net.ultragrav.chat.components.Component;
 import net.kyori.text.serializer.ComponentSerializers;
+import net.ultragrav.chat.components.TextComponent;
+import net.ultragrav.chat.converters.LegacyConverter;
 
 @SuppressWarnings("deprecation")
 public class TextUtil {
-    public static TextComponent comp(String str) {
-        return ComponentSerializers.LEGACY.deserialize(str, '&');
+    public static Component comp(String str) {
+        return LegacyConverter.AMPERSAND.convert(str);
     }
 
     public static String legacy(Component comp) {
-        return ComponentSerializers.LEGACY.serialize(comp);
+        return LegacyConverter.MINECRAFT.convert(comp);
     }
 }

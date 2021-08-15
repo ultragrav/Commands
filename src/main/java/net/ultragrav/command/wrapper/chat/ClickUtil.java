@@ -1,6 +1,6 @@
 package net.ultragrav.command.wrapper.chat;
 
-import net.kyori.text.event.ClickEvent;
+import net.ultragrav.chat.events.ClickEvent;
 import net.ultragrav.command.wrapper.player.UltraPlayer;
 
 import java.util.function.Consumer;

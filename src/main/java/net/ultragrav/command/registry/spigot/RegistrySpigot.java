@@ -14,6 +14,10 @@ import java.util.Set;
 
 @SuppressWarnings("unchecked")
 public final class RegistrySpigot implements Registry {
+    public RegistrySpigot() {
+        UtilSpigot.initReflection();
+    }
+
     @Getter
     private static final Set<UltraCommand> registerCommand = Sets.newConcurrentHashSet();
 

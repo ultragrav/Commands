@@ -4,7 +4,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import lombok.Getter;
 import lombok.Setter;
-import net.kyori.text.Component;
+import net.ultragrav.chat.components.Component;
 import net.ultragrav.command.exception.CommandException;
 import net.ultragrav.command.provider.UltraProvider;
 import net.ultragrav.command.registry.RegistryManager;
@@ -431,7 +431,10 @@ public abstract class UltraCommand {
     // Add subcommands
 
     public void addChildren(UltraCommand... commands) {
-        this.children.addAll(Arrays.asList(commands));
+        for (UltraCommand command : commands) {
+            this.children.add(command);
+            command.setParent(this);
+        }
     }
 
     // ----------------------------------- //
