@@ -7,12 +7,8 @@ import java.util.*;
 import java.util.function.Consumer;
 
 public class Handler {
-    private static class HandlerCmd extends UltraCommand {
-        private Handler parent;
-
+    private class HandlerCmd extends UltraCommand {
         public HandlerCmd(Handler parent) {
-            this.parent = parent;
-
             addAlias(cmdName);
 
             setAllowConsole(false);
@@ -26,16 +22,22 @@ public class Handler {
             }
 
             String str = getArgs().get(0);
+            UUID id;
             try {
-                UUID id = UUID.fromString(str);
-                if (parent.data.containsKey(id)) {
-                    HandledElement el = parent.data.get(id);
-                    el.used++;
-                    el.run.accept(getPlayer());
-                    parent.update();
-                }
-            } catch (Exception ignored) {
+                id = UUID.fromString(str);
+            } catch (IllegalArgumentException ignored) {
+                return; // Illegally formatted UUID, probably a player trying to mess around
             }
+            HandledElement el = getHandler(id);
+            if (el == null) return; // Handler not found or expired
+            el.used++;
+            try {
+                el.run.accept(getPlayer());
+            } catch(Exception e) {
+                System.out.println("Error while running chat Click Handler");
+                e.printStackTrace();
+            }
+            update();
         }
     }
 
@@ -98,17 +100,31 @@ public class Handler {
         return cmdName + " " + genId;
     }
 
+    /**
+     * Technically not needed since getHandler checks expiry and uses
+     * but could save memory if a lot of handlers are not used
+     */
     private void update() {
         List<UUID> marked = new ArrayList<>();
         long t = System.currentTimeMillis();
         data.forEach((i, h) -> {
-            if (h.expiry < t || (h.used >= h.uses && h.uses != -1)) {
+            if (h.expiry < t || (h.uses != -1 && h.used >= h.uses)) {
                 marked.add(i);
             }
         });
         for (UUID id : marked) {
             data.remove(id);
         }
+    }
+    
+    private HandledElement getHandler(UUID id) {
+        if (!data.containsKey(id)) return null; // Doesn't exist (anymore?)
+        HandledElement el = data.get(id);
+        if (el.expiry < System.currentTimeMillis() || (el.uses != -1 && el.used >= el.uses)) {
+            data.remove(id);
+            return null; // Already expired or overused
+        }
+        return el;
     }
 
     private static class HandledElement {
