@@ -21,6 +21,7 @@ public abstract class UltraCommand {
     private static final String DEFAULT_HELP_FORMAT = "/<cmd> <args>";
     private static final String DEFAULT_HELP_HEADER = "&cUsage:";
     private static final String DEFAULT_HELP_FOOTER = "";
+    private static final String DEFAULT_ERROR_MESSAGE = "&cAn error occurred, please report this to an administrator.";
 
     // ----------------------------------- //
     // COMMAND INFORMATION
@@ -42,6 +43,7 @@ public abstract class UltraCommand {
     // COMMAND EXECUTION
     // ----------------------------------- //
     protected UltraSender sender;
+    protected String label;
     protected List<String> args;
     @Setter
     private List<Parameter<?>> parameters = new ArrayList<>();
@@ -52,13 +54,16 @@ public abstract class UltraCommand {
     private String helpHeader = null;
     @Setter
     private String helpFooter = null;
+    @Setter
+    private String errorMessage = null;
 
     /**
      * @param sender The person that executed this command either a player or the console.
      * @param args   The arguments that are bound for this command.
      */
-    public void execute(UltraSender sender, List<String> args) {
+    public void execute(UltraSender sender, String cmd, List<String> args) {
         this.sender = sender;
+        this.label = cmd;
         this.args = args;
 
         try {
@@ -77,7 +82,7 @@ public abstract class UltraCommand {
                 UltraCommand child = matchExactChild(label);
                 if (child != null) {
                     args.remove(0);
-                    child.execute(sender, args);
+                    child.execute(sender, label, args);
                     return; // Don't perform the help on this command if a match is found
                 } // If the subcommand isn't found, call this.preform() since it sends help
             }
@@ -90,7 +95,13 @@ public abstract class UltraCommand {
                 throw new CommandException("");
             }
 
-            this.perform();
+            try {
+                this.perform();
+            } catch(Exception e) {
+                System.out.println("An exception occurred while handling a command: /" + cmd + " " + String.join(" ", args));
+                e.printStackTrace();
+                tell(getErrorMessage());
+            }
         } catch (CommandException exception) {
             // - This is our main exception to catch all of the little things mostly for parsing.
             tell(exception.getMessage());
@@ -180,6 +191,11 @@ public abstract class UltraCommand {
         if (parent != null) return parent.getHelpFormat();
         return DEFAULT_HELP_FORMAT;
     }
+    public String getErrorMessage() {
+        if (this.errorMessage != null) return this.errorMessage;
+        if (parent != null) return parent.getErrorMessage();
+        return DEFAULT_ERROR_MESSAGE;
+    }
 
     public String getPermission() {
         return (parent == null ? "" : parent.getPermission() + ".") + aliases.get(0);
@@ -212,7 +228,7 @@ public abstract class UltraCommand {
     private List<String> getTabCompletionsSubCommand(UltraSender sender, List<String> args) {
         if (args.size() != 1) {
             UltraCommand child = this.matchExactChild(args.get(0));
-            if (child == null)
+            if (child == null || !sender.hasPermission(child.getPermission()))
                 return Collections.EMPTY_LIST;
 
             args.remove(0);
@@ -222,8 +238,9 @@ public abstract class UltraCommand {
         String label = args.get(0).toLowerCase();
         List<String> ret = Lists.newArrayList();
 
-        for (UltraCommand children : this.children) {
-            for (String alias : children.aliases) {
+        for (UltraCommand child : this.children) {
+            if (!sender.hasPermission(child.getPermission())) continue;
+            for (String alias : child.aliases) {
                 if (alias.toLowerCase().startsWith(label)) {
                     ret.add(alias);
                 }

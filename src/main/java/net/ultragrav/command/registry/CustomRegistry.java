@@ -39,7 +39,7 @@ public class CustomRegistry implements Registry {
             // TODO: No such command
             return;
         }
-        cmd.execute(sender, new ArrayList<>(args));
+        cmd.execute(sender, command, new ArrayList<>(args));
     }
 
     public List<String> tabComlete(UltraSender sender, String command, List<String> args) {
