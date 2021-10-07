@@ -12,7 +12,7 @@ A simple commands library for Spigot and Bungeecord
 <dependency>
     <groupId>net.ultragrav</groupId>
     <artifactId>Commands</artifactId>
-    <version>1.4.1</version>
+    <version>1.4.2</version>
 </dependency>
 ```
 
