@@ -36,7 +36,7 @@ public class OfflinePlayerProvider extends UltraProvider<OfflinePlayer> {
         List<String> toSend = Lists.newArrayList();
 
         for (OfflinePlayer player : Bukkit.getOfflinePlayers())
-            if (player.hasPlayedBefore() && player.getName().toLowerCase().startsWith(toComplete))
+            if ((player.isOnline() || player.hasPlayedBefore()) && player.getName().toLowerCase().startsWith(toComplete))
                 toSend.add(player.getName());
 
         return toSend;
