@@ -98,9 +98,13 @@ public abstract class UltraCommand {
             try {
                 this.perform();
             } catch(Exception e) {
-                System.out.println("An exception occurred while handling a command: /" + cmd + " " + String.join(" ", args));
-                e.printStackTrace();
-                tell(getErrorMessage());
+                if (e instanceof CommandException) {
+                    throw e;
+                } else {
+                    System.out.println("An exception occurred while handling a command: /" + cmd + " " + String.join(" ", args));
+                    e.printStackTrace();
+                    tell(getErrorMessage());
+                }
             }
         } catch (CommandException exception) {
             // - This is our main exception to catch all of the little things mostly for parsing.

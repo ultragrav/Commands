@@ -42,7 +42,7 @@ public class CustomRegistry implements Registry {
         cmd.execute(sender, command, new ArrayList<>(args));
     }
 
-    public List<String> tabComlete(UltraSender sender, String command, List<String> args) {
+    public List<String> tabComplete(UltraSender sender, String command, List<String> args) {
         UltraCommand cmd = registered.get(command.toLowerCase());
         if (cmd == null) {
             return new ArrayList<>();
