@@ -21,7 +21,7 @@ public class ExecutorVelocity implements Command {
 
     @Override
     public void execute(CommandSource commandSource, String @NonNull [] strings) {
-        command.execute(UtilVelocity.wrap(commandSource), Lists.newArrayList(strings));
+        command.execute(UtilVelocity.wrap(commandSource), command.getAliases().get(0), Lists.newArrayList(strings));
     }
 
     @Override

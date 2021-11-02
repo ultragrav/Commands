@@ -1,6 +1,21 @@
 # Commands
 A simple commands library for Spigot and Bungeecord
 
+## Installation
+### Maven:
+```xml
+<repository>
+    <id>UltraGrav</id>
+    <url>https://mvn.ultragrav.net</url>
+</repository>
+
+<dependency>
+    <groupId>net.ultragrav</groupId>
+    <artifactId>Commands</artifactId>
+    <version>1.4.2</version>
+</dependency>
+```
+
 ## Example Usage
 ExampleCommand.java
 ```java

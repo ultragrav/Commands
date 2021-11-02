@@ -22,7 +22,7 @@ public class ExecutorBungee extends Command implements TabExecutor {
 
     @Override
     public void execute(CommandSender commandSender, String[] args) {
-        command.execute(UtilBungee.wrap(commandSender), Lists.newArrayList(args));
+        command.execute(UtilBungee.wrap(commandSender), command.getAliases().get(0), Lists.newArrayList(args));
     }
 
     @Override

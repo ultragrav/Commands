@@ -28,7 +28,7 @@ public final class ExecutorSpigot extends Command {
 
 	@Override
 	public boolean execute(final CommandSender sender, final String commandLabel, final String[] args) {
-		command.execute(UtilSpigot.wrap(sender), Lists.newArrayList(args));
+		command.execute(UtilSpigot.wrap(sender), commandLabel, Lists.newArrayList(args));
 		return false;
 	}
 
