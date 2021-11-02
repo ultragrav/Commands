@@ -1,6 +1,5 @@
 package net.ultragrav.command.registry.spigot;
 
-import com.google.common.collect.Sets;
 import lombok.Getter;
 import net.ultragrav.command.UltraCommand;
 import net.ultragrav.command.registry.Registry;
@@ -9,8 +8,10 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandMap;
 
 import java.lang.reflect.Field;
+import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 @SuppressWarnings("unchecked")
 public final class RegistrySpigot implements Registry {
@@ -19,7 +20,7 @@ public final class RegistrySpigot implements Registry {
     }
 
     @Getter
-    private static final Set<UltraCommand> registerCommand = Sets.newConcurrentHashSet();
+    private static final Set<UltraCommand> registerCommand = Collections.newSetFromMap(new ConcurrentHashMap<>());
 
     private void register(String label, UltraCommand command) {
         try {

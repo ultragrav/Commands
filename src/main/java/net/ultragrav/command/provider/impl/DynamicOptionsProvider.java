@@ -1,15 +1,13 @@
 package net.ultragrav.command.provider.impl;
 
-import com.google.common.collect.Lists;
 import lombok.NonNull;
 import net.ultragrav.command.exception.CommandException;
 import net.ultragrav.command.provider.UltraProvider;
 import net.ultragrav.command.wrapper.sender.UltraSender;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 /**
  * Allows the creation of a provider that generates a list
@@ -42,7 +40,7 @@ public class DynamicOptionsProvider extends UltraProvider<String> {
     @Override
     public List<String> tabComplete(@NonNull String s, UltraSender sender) {
         List<String> options = generator.apply(sender);
-        List<String> toSend = Lists.newArrayList();
+        List<String> toSend = new ArrayList<>();
 
         for (String str : options)
             if (str.startsWith(s))

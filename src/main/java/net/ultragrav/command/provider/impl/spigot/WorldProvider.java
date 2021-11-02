@@ -1,6 +1,5 @@
 package net.ultragrav.command.provider.impl.spigot;
 
-import com.google.common.collect.Lists;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,6 +10,7 @@ import net.ultragrav.command.wrapper.sender.UltraSender;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -35,7 +35,7 @@ public final class WorldProvider extends UltraProvider<World> {
     @Override
     public List<String> tabComplete(@NonNull final String toComplete, UltraSender sender) {
 
-        List<String> ret = Lists.newArrayList();
+        List<String> ret = new ArrayList<>();
 
         for (World world : Bukkit.getWorlds()) {
             if (world.getName().toLowerCase().startsWith(toComplete)) {

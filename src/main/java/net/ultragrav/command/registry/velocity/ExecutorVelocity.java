@@ -1,14 +1,12 @@
 package net.ultragrav.command.registry.velocity;
 
-import com.google.common.collect.Lists;
 import com.velocitypowered.api.command.Command;
 import com.velocitypowered.api.command.CommandSource;
 import lombok.Getter;
 import net.ultragrav.command.UltraCommand;
 import net.ultragrav.command.util.ArrayUtils;
-import org.checkerframework.checker.nullness.qual.NonNull;
 
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.List;
 
 public class ExecutorVelocity implements Command {
@@ -20,12 +18,12 @@ public class ExecutorVelocity implements Command {
     }
 
     @Override
-    public void execute(CommandSource commandSource, String @NonNull [] strings) {
-        command.execute(UtilVelocity.wrap(commandSource), command.getAliases().get(0), Lists.newArrayList(strings));
+    public void execute(CommandSource commandSource, String[] strings) {
+        command.execute(UtilVelocity.wrap(commandSource), command.getAliases().get(0), Arrays.asList(strings));
     }
 
     @Override
-    public List<String> suggest(CommandSource source, String @NonNull [] currentArgs) {
+    public List<String> suggest(CommandSource source, String[] currentArgs) {
         List<String> args = ArrayUtils.listNonNull(currentArgs);
         List<String> ret = this.getCommand().getTabCompletions(UtilVelocity.wrap(source), args);
 

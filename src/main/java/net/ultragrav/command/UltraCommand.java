@@ -1,7 +1,5 @@
 package net.ultragrav.command;
 
-import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
 import lombok.Getter;
 import lombok.Setter;
 import net.ultragrav.chat.components.Component;
@@ -27,7 +25,7 @@ public abstract class UltraCommand {
     // COMMAND INFORMATION
     // ----------------------------------- //
     protected final List<String> aliases = new ArrayList<>();
-    protected final Set<UltraCommand> children = Sets.newHashSet();
+    protected final Set<UltraCommand> children = new HashSet<>();
     @Setter
     protected UltraCommand parent;
     @Setter
@@ -97,7 +95,7 @@ public abstract class UltraCommand {
 
             try {
                 this.perform();
-            } catch(Exception e) {
+            } catch (Exception e) {
                 if (e instanceof CommandException) {
                     throw e;
                 } else {
@@ -185,16 +183,19 @@ public abstract class UltraCommand {
         if (parent != null) return parent.getHelpFooter();
         return DEFAULT_HELP_FOOTER;
     }
+
     public String getHelpHeader() {
         if (this.helpHeader != null) return this.helpHeader;
         if (parent != null) return parent.getHelpHeader();
         return DEFAULT_HELP_HEADER;
     }
+
     public String getHelpFormat() {
         if (this.helpFormat != null) return this.helpFormat;
         if (parent != null) return parent.getHelpFormat();
         return DEFAULT_HELP_FORMAT;
     }
+
     public String getErrorMessage() {
         if (this.errorMessage != null) return this.errorMessage;
         if (parent != null) return parent.getErrorMessage();
@@ -240,7 +241,7 @@ public abstract class UltraCommand {
         }
 
         String label = args.get(0).toLowerCase();
-        List<String> ret = Lists.newArrayList();
+        List<String> ret = new ArrayList<>();
 
         for (UltraCommand child : this.children) {
             if (!sender.hasPermission(child.getPermission())) continue;
@@ -491,7 +492,7 @@ public abstract class UltraCommand {
     }
 
     public Set<UltraCommand> getChildren(String label) {
-        Set<UltraCommand> ret = Sets.newHashSet();
+        Set<UltraCommand> ret = new HashSet<>();
         label = label.toLowerCase();
         // - Go though each command.
         for (UltraCommand command : this.children) {

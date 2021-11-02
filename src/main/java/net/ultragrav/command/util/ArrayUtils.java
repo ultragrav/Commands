@@ -1,14 +1,13 @@
 package net.ultragrav.command.util;
 
-import com.google.common.collect.Lists;
-
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
 public class ArrayUtils {
     public static <I, O> O[] convert(I[] arr, Function<I, O> func, Function<Integer, O[]> arraySupplier) {
         O[] ret = arraySupplier.apply(arr.length);
-        for (int i = 0; i < arr.length; i ++) {
+        for (int i = 0; i < arr.length; i++) {
             ret[i] = func.apply(arr[i]);
         }
         return ret;
@@ -23,7 +22,7 @@ public class ArrayUtils {
     }
 
     public static List<String> listNonNull(String[] strs) {
-        List<String> args = Lists.newArrayList();
+        List<String> args = new ArrayList<>();
         for (int i = 0; i < strs.length - 1; i++) {
             String str = strs[i];
             if (str == null) continue;
