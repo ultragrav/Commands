@@ -1,7 +1,5 @@
 package net.ultragrav.command;
 
-import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
 import lombok.Getter;
 import lombok.Setter;
 import net.ultragrav.chat.components.Component;
@@ -26,7 +24,7 @@ public abstract class UltraCommand {
     // COMMAND INFORMATION
     // ----------------------------------- //
     protected final List<String> aliases = new ArrayList<>();
-    protected final Set<UltraCommand> children = Sets.newHashSet();
+    protected final Set<UltraCommand> children = new HashSet<>();
     @Setter
     protected UltraCommand parent;
     @Setter
@@ -220,7 +218,7 @@ public abstract class UltraCommand {
         }
 
         String label = args.get(0).toLowerCase();
-        List<String> ret = Lists.newArrayList();
+        List<String> ret = new ArrayList<>();
 
         for (UltraCommand children : this.children) {
             for (String alias : children.aliases) {
@@ -470,7 +468,7 @@ public abstract class UltraCommand {
     }
 
     public Set<UltraCommand> getChildren(String label) {
-        Set<UltraCommand> ret = Sets.newHashSet();
+        Set<UltraCommand> ret = new HashSet<>();
         label = label.toLowerCase();
         // - Go though each command.
         for (UltraCommand command : this.children) {
