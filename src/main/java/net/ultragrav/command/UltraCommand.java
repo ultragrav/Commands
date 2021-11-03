@@ -79,8 +79,10 @@ public abstract class UltraCommand {
 
                 UltraCommand child = matchExactChild(label);
                 if (child != null) {
-                    args.remove(0);
-                    child.execute(sender, label, args);
+                    // Avoid modifying args, since it might be unmodifiable
+                    List<String> copy = new ArrayList<>(args);
+                    copy.remove(0);
+                    child.execute(sender, label, copy);
                     return; // Don't perform the help on this command if a match is found
                 } // If the subcommand isn't found, call this.preform() since it sends help
             }
@@ -218,6 +220,7 @@ public abstract class UltraCommand {
      * @return Will return a list that will be sent to a player.
      */
     public List<String> getTabCompletions(UltraSender sender, List<String> args) {
+        args = new ArrayList<>(args); // Avoid modifying original
         if (requirePermission && !sender.hasPermission(getPermission()))
             return new ArrayList<>();
         List<String> compl = new ArrayList<>();
