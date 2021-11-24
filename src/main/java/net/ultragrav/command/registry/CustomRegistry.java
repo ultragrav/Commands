@@ -12,9 +12,9 @@ import java.util.Map;
 /**
  * Create a custom registry to use UltraCommands for your own
  * games or other projects!
- *
+ * <p>
  * Note: Commands are case INSENSITIVE.
- *
+ * <p>
  * Remember to make your own implementations of
  * {@link net.ultragrav.command.wrapper.player.UltraPlayer UltraPlayer}, and if you want to, {@link UltraSender UltraSender}
  */
@@ -33,15 +33,31 @@ public class CustomRegistry implements Registry {
         cmd.getAliases().forEach(str -> registered.put(str.toLowerCase(), cmd));
     }
 
-    public void execute(UltraSender sender, String command, List<String> args) {
+    /**
+     * Execute the specified command
+     *
+     * @param sender  Command sender (executor)
+     * @param command Command name
+     * @param args    Arguments
+     * @return {@code false} if no such command was found, {@code true} otherwise
+     */
+    public boolean execute(UltraSender sender, String command, List<String> args) {
         UltraCommand cmd = registered.get(command.toLowerCase());
         if (cmd == null) {
-            // TODO: No such command
-            return;
+            return false;
         }
         cmd.execute(sender, command, new ArrayList<>(args));
+        return true;
     }
 
+    /**
+     * Get tab completions for the specified command
+     *
+     * @param sender Command sender (executor)
+     * @param command Command name
+     * @param args Arguments
+     * @return Tab completions (or empty list if no such command exists)
+     */
     public List<String> tabComplete(UltraSender sender, String command, List<String> args) {
         UltraCommand cmd = registered.get(command.toLowerCase());
         if (cmd == null) {

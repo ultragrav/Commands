@@ -101,7 +101,7 @@ public abstract class UltraCommand {
                 if (e instanceof CommandException) {
                     throw e;
                 } else {
-                    System.out.println("An exception occurred while handling a command: /" + cmd + " " + String.join(" ", args));
+                    System.out.println("An exception occurred while handling a command: " + getFullCommand() + " " + String.join(" ", args));
                     e.printStackTrace();
                     tell(getErrorMessage());
                 }
