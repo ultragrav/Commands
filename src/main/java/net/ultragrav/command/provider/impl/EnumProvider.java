@@ -34,7 +34,7 @@ public abstract class EnumProvider<T extends Enum<T>> extends UltraProvider<Enum
             T[] consts = enumClass.getEnumConstants();
             for (T t : consts) {
                 if (t.name().equalsIgnoreCase(n)) {
-                    n = t.name();
+                    return t;
                 }
             }
         }
@@ -49,6 +49,8 @@ public abstract class EnumProvider<T extends Enum<T>> extends UltraProvider<Enum
 
     @Override
     public List<String> tabComplete(@NonNull String toComplete, UltraSender sender) {
+        toComplete = toComplete.toLowerCase();
+
         List<String> ret = new ArrayList<>();
         for (T t : enumClass.getEnumConstants()) {
             if (t.name().toLowerCase().startsWith(toComplete)) {
