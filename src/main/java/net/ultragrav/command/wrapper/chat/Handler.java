@@ -1,6 +1,7 @@
 package net.ultragrav.command.wrapper.chat;
 
 import net.ultragrav.command.UltraCommand;
+import net.ultragrav.command.provider.impl.StringProvider;
 import net.ultragrav.command.wrapper.player.UltraPlayer;
 
 import java.util.*;
@@ -13,6 +14,8 @@ public class Handler {
 
             setAllowConsole(false);
             setRequirePermission(false);
+
+            parameterBuilder(StringProvider.getInstance()).build();
         }
 
         @Override
@@ -21,7 +24,7 @@ public class Handler {
                 return;
             }
 
-            String str = getArgs().get(0);
+            String str = getArgument(0);
             UUID id;
             try {
                 id = UUID.fromString(str);
