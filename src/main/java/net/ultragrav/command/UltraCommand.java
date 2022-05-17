@@ -152,10 +152,10 @@ public abstract class UltraCommand {
 
     public void sendHelp() {
         if (getHelpHeader() != null)
-            tell(getHelpHeader());
+            tell(formatHelpHeadFoot(getHelpHeader()));
         getHelp().forEach(this::tell);
         if (getHelpFooter() != null)
-            tell(getHelpFooter());
+            tell(formatHelpHeadFoot(getHelpFooter()));
     }
 
     public List<String> getHelp() {
@@ -172,12 +172,16 @@ public abstract class UltraCommand {
                 ret.addAll(cmd.getHelp(format));
             }
         }
-        ret.add(format.replace("<cmd>", getFullCommand())
-                .replace("<desc>", getDescription())
-                .replace("<args>", getParameterDescriptions())
-                .replace("<params>", getParameterDescriptions())
-                .replace("<perm>", getPermission()));
+        ret.add(format.replaceAll("<cmd>", getFullCommand())
+                .replaceAll("<desc>", getDescription())
+                .replaceAll("<args>", getParameterDescriptions())
+                .replaceAll("<params>", getParameterDescriptions())
+                .replaceAll("<perm>", getPermission()));
         return ret;
+    }
+
+    private String formatHelpHeadFoot(String msg) {
+        return msg.replaceAll("<alias>", getAliases().get(0));
     }
 
     public String getHelpFooter() {
