@@ -74,6 +74,10 @@ public class Handler {
         return registerHandler(run, DEFAULT_EXPIRY);
     }
 
+    public String registerHandler(UUID id, Consumer<UltraPlayer> run) {
+        return registerHandler(id, run, DEFAULT_EXPIRY);
+    }
+
     /**
      * Register a handler with a custom timeout
      *
@@ -86,6 +90,12 @@ public class Handler {
         data.put(genId, new HandledElement(run, expiry));
         update();
         return cmdName + " " + genId;
+    }
+
+    public String registerHandler(UUID id, Consumer<UltraPlayer> run, long expiry) {
+        data.put(id, new HandledElement(run, expiry));
+        update();
+        return cmdName + " " + id;
     }
 
     /**
@@ -101,6 +111,12 @@ public class Handler {
         data.put(genId, new HandledElement(run, expiry, uses));
         update();
         return cmdName + " " + genId;
+    }
+
+    public String registerHandler(UUID id, Consumer<UltraPlayer> run, long expiry, int uses) {
+        data.put(id, new HandledElement(run, expiry, uses));
+        update();
+        return cmdName + " " + id;
     }
 
     /**
