@@ -89,13 +89,13 @@ public class Handler {
         UUID genId = UUID.randomUUID();
         data.put(genId, new HandledElement(run, expiry));
         update();
-        return cmdName + " " + genId;
+        return "/" + cmdName + " " + genId;
     }
 
     public String registerHandler(UUID id, Consumer<UltraPlayer> run, long expiry) {
         data.put(id, new HandledElement(run, expiry));
         update();
-        return cmdName + " " + id;
+        return "/" + cmdName + " " + id;
     }
 
     /**
@@ -110,13 +110,13 @@ public class Handler {
         UUID genId = UUID.randomUUID();
         data.put(genId, new HandledElement(run, expiry, uses));
         update();
-        return cmdName + " " + genId;
+        return "/" + cmdName + " " + genId;
     }
 
     public String registerHandler(UUID id, Consumer<UltraPlayer> run, long expiry, int uses) {
         data.put(id, new HandledElement(run, expiry, uses));
         update();
-        return cmdName + " " + id;
+        return "/" + cmdName + " " + id;
     }
 
     /**
