@@ -20,6 +20,10 @@ public abstract class UltraProvider<T> {
 		return convert(toConvert);
 	}
 
+	public T convert(List<String> toConvert, UltraSender sender) throws CommandException {
+		return convert(toConvert.remove(0));
+	}
+
 	@Deprecated
 	public List<String> tabComplete(@NonNull String toComplete) {
 		return null;
@@ -27,6 +31,10 @@ public abstract class UltraProvider<T> {
 
 	public List<String> tabComplete(@NonNull String toComplete, UltraSender sender) {
 		return tabComplete(toComplete);
+	}
+
+	public List<String> tabComplete(List<String> toComplete, UltraSender sender) {
+		return tabComplete(String.join(" ", toComplete));
 	}
 
 	public abstract String getArgumentDescription();

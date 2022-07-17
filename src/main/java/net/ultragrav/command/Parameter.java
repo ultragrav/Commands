@@ -44,7 +44,13 @@ public class Parameter<T> {
         return this.isDefaultValueSet();
     }
 
-    public T convert(String str, UltraSender sender) {
+    public T getDefaultValue() {
+        if (!this.defaultValueSet)
+            return provider.defaultNullValue();
+        return this.defaultValue;
+    }
+
+    public T convert(List<String> str, UltraSender sender) {
         T obj = provider.convert(str, sender);
 
         for (ParameterCondition<T> condition : conditions) {

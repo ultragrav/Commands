@@ -23,8 +23,19 @@ public final class StringProvider extends UltraProvider<String> {
 	private static final StringProvider instance = new StringProvider();
 
 	@Override
-	public String convert(@NonNull final String toConvert, UltraSender sender) throws CommandException {
-		return toConvert;
+	public String convert(List<String> toConvert, UltraSender sender) throws CommandException {
+		String first = toConvert.remove(0);
+		if (first.charAt(0) != '"') return first;
+		StringBuilder builder = new StringBuilder(first.substring(1));
+		while (!toConvert.isEmpty()) {
+			String next = toConvert.remove(0);
+			if (next.charAt(next.length() - 1) == '"') {
+				builder.append(next, 0, next.length() - 1);
+				return builder.toString();
+			}
+			builder.append(next);
+		}
+		throw new CommandException("Unclosed string");
 	}
 
 	@Override

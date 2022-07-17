@@ -43,6 +43,7 @@ public abstract class UltraCommand {
     protected UltraSender sender;
     protected String label;
     protected List<String> args;
+    protected List<Object> convertedArgs = new ArrayList<>();
     @Setter
     private List<Parameter<?>> parameters = new ArrayList<>();
 
@@ -87,12 +88,9 @@ public abstract class UltraCommand {
                 } // If the subcommand isn't found, call this.preform() since it sends help
             }
 
-            if (
-                    checkParams &&
-                            (args.size() < getRequiredParameterCount() || args.size() > parameters.size()) &&
-                            !(parameters.size() > 0 && parameters.get(parameters.size() - 1).isVarArg() && args.size() >= parameters.size() - 1)) {
+            if (checkParams) {
                 sendHelp();
-                throw new CommandException("");
+                parseArgs();
             }
 
             try {
@@ -107,7 +105,7 @@ public abstract class UltraCommand {
                 }
             }
         } catch (CommandException exception) {
-            // - This is our main exception to catch all of the little things mostly for parsing.
+            // - This is our main exception to catch all the little things mostly for parsing.
             tell(exception.getMessage());
         } finally {
             // Clean up params.
@@ -227,7 +225,7 @@ public abstract class UltraCommand {
         if (hasChildren()) {
             compl = getTabCompletionsSubCommand(sender, args);
         }
-        if (compl.isEmpty()) {
+        if (compl == null) {
             compl = getTabCompletionsArguments(sender, args);
         }
         return compl;
@@ -237,7 +235,7 @@ public abstract class UltraCommand {
         if (args.size() != 1) {
             UltraCommand child = this.matchExactChild(args.get(0));
             if (child == null || !sender.hasPermission(child.getPermission()))
-                return Collections.EMPTY_LIST;
+                return null; // Tab completion failed (no child)
 
             args.remove(0);
             return child.getTabCompletions(sender, args);
@@ -259,55 +257,59 @@ public abstract class UltraCommand {
     }
 
     private List<String> getTabCompletionsArguments(UltraSender sender, List<String> args) {
-        int index = args.size() - 1;
-
-        if (this.noParameterForIndex(index)) {
-            Parameter<?> param;
-            if (!this.parameters.isEmpty() && (param = this.parameters.get(this.parameters.size() - 1)).isVarArg()) {
-                return param.getProvider().tabComplete(args.get(index), sender);
-            } else {
-                return Collections.emptyList();
+        List<String> argsCopy = new ArrayList<>(args);
+        List<String> argsCopy2 = new ArrayList<>(argsCopy);
+        for (Parameter<?> param : parameters) {
+            try {
+                param.convert(argsCopy, sender);
+            } catch(CommandException ignored) {
             }
+
+            if (argsCopy.isEmpty()) {
+                return param.getProvider().tabComplete(argsCopy2, sender);
+            }
+            argsCopy2 = argsCopy2.subList(argsCopy2.size() - argsCopy.size(), argsCopy2.size());
         }
-
-        UltraProvider<?> provider = this.getParameters().get(index).getProvider();
-
-        return provider.tabComplete(args.get(index), sender);
+        return Collections.emptyList();
     }
 
     // ----------------------------------- //
     // ARGUMENTS
     // ----------------------------------- //
-    public <T> T getArgument(int index) {
-        if (this.noParameterForIndex(index))
-            throw new IllegalArgumentException(index + " is out of range. Parameters size: " + this.getParameters().size());
-
-        Parameter<?> parameterU = this.getParameters().get(index);
-
-        if (index + 1 == this.getParameters().size()) {
-            if (parameterU.isVarArg()) {
-                List ret = new ArrayList<>();
-                for (int i = index; i < this.args.size(); i++) {
-                    ret.add(parameterU.convert(args.get(i), sender));
+    private void parseArgs() {
+        List<String> argsCopy = new ArrayList<>(args);
+        this.convertedArgs = new ArrayList<>(parameters.size());
+        for (Parameter<?> param : parameters) {
+            if (argsCopy.isEmpty()) {
+                if (param.isOptional()) {
+                    convertedArgs.add(param.getDefaultValue());
+                } else {
+                    throw new CommandException("Missing required argument: " + param.getName());
                 }
-                return (T) ret;
+            } else {
+                convertedArgs.add(param.convert(argsCopy, sender));
             }
         }
+        Parameter<?> lastParam = parameters.get(parameters.size() - 1);
+        if (lastParam.isVarArg()) {
+            Object last = this.convertedArgs.get(parameters.size() - 1);
+            List<Object> varArgs = new ArrayList<>();
+            varArgs.add(last);
+            while (!argsCopy.isEmpty()) {
+                varArgs.add(lastParam.convert(argsCopy, sender));
+            }
+            this.convertedArgs.set(parameters.size() - 1, varArgs);
+        }
+    }
 
-        Parameter<T> parameter = (Parameter<T>) parameterU;
-
-        if (!this.isArgSet(index) && parameter.isDefaultValueSet()) return parameter.getDefaultValue();
-
-        String arg = null;
-        if (this.isArgSet(index)) arg = this.getArgs().get(index);
-
-        return parameter.convert(arg, sender);
+    public <T> T getArgument(int index) {
+        return (T) convertedArgs.get(index);
     }
 
     private boolean isArgSet(int idx) {
         if (idx < 0) return false;
-        if (idx + 1 > this.args.size()) return false;
-        return this.args.get(idx) != null;
+        if (idx + 1 > this.convertedArgs.size()) return false;
+        return this.convertedArgs.get(idx) != this.parameters.get(idx).provider.defaultNullValue();
     }
 
     // ----------------------------------- //
