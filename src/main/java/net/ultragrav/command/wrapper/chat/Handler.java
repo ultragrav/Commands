@@ -1,6 +1,7 @@
 package net.ultragrav.command.wrapper.chat;
 
 import net.ultragrav.command.UltraCommand;
+import net.ultragrav.command.provider.impl.StringProvider;
 import net.ultragrav.command.wrapper.player.UltraPlayer;
 
 import java.util.*;
@@ -13,6 +14,8 @@ public class Handler {
 
             setAllowConsole(false);
             setRequirePermission(false);
+
+            parameterBuilder(StringProvider.getInstance()).build();
         }
 
         @Override
@@ -21,7 +24,7 @@ public class Handler {
                 return;
             }
 
-            String str = getArgs().get(0);
+            String str = getArgument(0);
             UUID id;
             try {
                 id = UUID.fromString(str);
@@ -71,6 +74,10 @@ public class Handler {
         return registerHandler(run, DEFAULT_EXPIRY);
     }
 
+    public String registerHandler(UUID id, Consumer<UltraPlayer> run) {
+        return registerHandler(id, run, DEFAULT_EXPIRY);
+    }
+
     /**
      * Register a handler with a custom timeout
      *
@@ -82,7 +89,13 @@ public class Handler {
         UUID genId = UUID.randomUUID();
         data.put(genId, new HandledElement(run, expiry));
         update();
-        return cmdName + " " + genId;
+        return "/" + cmdName + " " + genId;
+    }
+
+    public String registerHandler(UUID id, Consumer<UltraPlayer> run, long expiry) {
+        data.put(id, new HandledElement(run, expiry));
+        update();
+        return "/" + cmdName + " " + id;
     }
 
     /**
@@ -97,7 +110,13 @@ public class Handler {
         UUID genId = UUID.randomUUID();
         data.put(genId, new HandledElement(run, expiry, uses));
         update();
-        return cmdName + " " + genId;
+        return "/" + cmdName + " " + genId;
+    }
+
+    public String registerHandler(UUID id, Consumer<UltraPlayer> run, long expiry, int uses) {
+        data.put(id, new HandledElement(run, expiry, uses));
+        update();
+        return "/" + cmdName + " " + id;
     }
 
     /**

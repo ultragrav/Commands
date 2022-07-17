@@ -3,6 +3,7 @@ package net.ultragrav.command.wrapper.chat;
 import net.ultragrav.chat.events.ClickEvent;
 import net.ultragrav.command.wrapper.player.UltraPlayer;
 
+import java.util.UUID;
 import java.util.function.Consumer;
 
 public class ClickUtil {
@@ -70,6 +71,18 @@ public class ClickUtil {
 
     /**
      * Run a runnable
+     * Expires after 60 seconds
+     *
+     * @param id  Handler ID
+     * @param run Runnable
+     * @return Click event
+     */
+    public static ClickEvent runnable(UUID id, Consumer<UltraPlayer> run) {
+        return command(Handler.getHandler().registerHandler(id, run));
+    }
+
+    /**
+     * Run a runnable
      * Expires after a set amount of time
      *
      * @param run    Runnable
@@ -84,12 +97,39 @@ public class ClickUtil {
      * Run a runnable
      * Expires after a set amount of time
      *
+     * @param id     Handler ID
      * @param run    Runnable
      * @param expiry Time until expiry (milliseconds)
-     * @param uses Max uses
+     * @return Click event
+     */
+    public static ClickEvent runnable(UUID id, Consumer<UltraPlayer> run, long expiry) {
+        return command(Handler.getHandler().registerHandler(id, run, expiry));
+    }
+
+    /**
+     * Run a runnable
+     * Expires after a set amount of time
+     *
+     * @param run    Runnable
+     * @param expiry Time until expiry (milliseconds)
+     * @param uses   Max uses
      * @return Click event
      */
     public static ClickEvent runnable(Consumer<UltraPlayer> run, long expiry, int uses) {
         return command(Handler.getHandler().registerHandler(run, expiry, uses));
+    }
+
+    /**
+     * Run a runnable
+     * Expires after a set amount of time
+     *
+     * @param id     Handler ID
+     * @param run    Runnable
+     * @param expiry Time until expiry (milliseconds)
+     * @param uses   Max uses
+     * @return Click event
+     */
+    public static ClickEvent runnable(UUID id, Consumer<UltraPlayer> run, long expiry, int uses) {
+        return command(Handler.getHandler().registerHandler(id, run, expiry, uses));
     }
 }
