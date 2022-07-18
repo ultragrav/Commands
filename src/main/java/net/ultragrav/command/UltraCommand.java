@@ -89,8 +89,12 @@ public abstract class UltraCommand {
             }
 
             if (checkParams) {
-                sendHelp();
-                parseArgs();
+                try {
+                    parseArgs();
+                } catch(CommandException e) {
+                    sendHelp();
+                    throw e;
+                }
             }
 
             try {
@@ -281,6 +285,13 @@ public abstract class UltraCommand {
     // ARGUMENTS
     // ----------------------------------- //
     private void parseArgs() {
+        if (parameters.isEmpty()) {
+            if (!args.isEmpty()) {
+                throw new CommandException("Unexpected arguments.");
+            }
+            return;
+        }
+
         List<String> argsCopy = new ArrayList<>(args);
         this.convertedArgs = new ArrayList<>(parameters.size());
         for (Parameter<?> param : parameters) {
