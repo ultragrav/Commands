@@ -6,17 +6,34 @@ import net.ultragrav.command.registry.Registry;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandMap;
+import org.bukkit.command.CommandSender;
+import org.bukkit.event.HandlerList;
+import org.bukkit.plugin.RegisteredListener;
 
 import java.lang.reflect.Field;
-import java.util.Collections;
-import java.util.Map;
-import java.util.Set;
+import java.lang.reflect.Method;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 @SuppressWarnings("unchecked")
 public final class RegistrySpigot implements Registry {
+    private CommandMap commandMap;
+    @Getter
+    private ExecutorService tabCompleteExecutor = Executors.newCachedThreadPool();
+
     public RegistrySpigot() {
         UtilSpigot.initReflection();
+
+        try {
+            Field commandMapField = Bukkit.getServer().getClass().getDeclaredField("commandMap");
+            commandMapField.setAccessible(true);
+
+            this.commandMap = (CommandMap) commandMapField.get(Bukkit.getServer());
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Getter
@@ -24,10 +41,6 @@ public final class RegistrySpigot implements Registry {
 
     private void register(String label, UltraCommand command) {
         try {
-            Field commandMapField = Bukkit.getServer().getClass().getDeclaredField("commandMap");
-            commandMapField.setAccessible(true);
-
-            CommandMap commandMap = (CommandMap) commandMapField.get(Bukkit.getServer());
             unregister(commandMap, label);
             for (String str : command.getAliases()) {
                 unregister(commandMap, str);
@@ -52,5 +65,31 @@ public final class RegistrySpigot implements Registry {
 
     public void register(UltraCommand command) {
         register(command.getAliases().get(0), command);
+    }
+
+    public boolean checkAsync(String cmd) {
+        String cmdName = cmd.split(" ")[0];
+        Command command = commandMap.getCommand(cmdName);
+        if (!(command instanceof ExecutorSpigot)) {
+            return false;
+        }
+        ExecutorSpigot executor = (ExecutorSpigot) command;
+        return executor.getCommand().isAsync();
+    }
+
+    public List<String> tabCompletePacket(CommandSender sender, String cmd) {
+        String[] split = cmd.split(" ");
+        String cmdName = split[0];
+        String[] args = new String[split.length - 1];
+        System.arraycopy(split, 1, args, 0, args.length);
+
+        List<String> argsList = Arrays.asList(args);
+
+        Command command = commandMap.getCommand(cmdName);
+        if (!(command instanceof ExecutorSpigot)) {
+            throw new IllegalStateException("Called tabCompletePacket on a command that isn't an UltraCommand");
+        }
+        ExecutorSpigot executor = (ExecutorSpigot) command;
+        return executor.getCommand().getTabCompletions(UtilSpigot.wrap(sender), argsList);
     }
 }

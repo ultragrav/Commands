@@ -29,6 +29,7 @@ public final class StringProvider extends UltraProvider<String> {
 		StringBuilder builder = new StringBuilder(first.substring(1));
 		while (!toConvert.isEmpty()) {
 			String next = toConvert.remove(0);
+			builder.append(' ');
 			if (next.charAt(next.length() - 1) == '"') {
 				builder.append(next, 0, next.length() - 1);
 				return builder.toString();

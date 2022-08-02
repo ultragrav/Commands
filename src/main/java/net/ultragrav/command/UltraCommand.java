@@ -11,6 +11,8 @@ import net.ultragrav.command.wrapper.player.UltraPlayer;
 import net.ultragrav.command.wrapper.sender.UltraSender;
 
 import java.util.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
 @SuppressWarnings("unchecked")
@@ -20,6 +22,8 @@ public abstract class UltraCommand {
     private static final String DEFAULT_HELP_HEADER = "&cUsage:";
     private static final String DEFAULT_HELP_FOOTER = "";
     private static final String DEFAULT_ERROR_MESSAGE = "&cAn error occurred, please report this to an administrator.";
+
+    private static final ExecutorService executor = Executors.newSingleThreadExecutor();
 
     // ----------------------------------- //
     // COMMAND INFORMATION
@@ -36,6 +40,8 @@ public abstract class UltraCommand {
     protected boolean requirePermission = true;
     @Setter
     protected boolean checkParams = true;
+    @Setter
+    protected boolean async = false;
 
     // ----------------------------------- //
     // COMMAND EXECUTION
@@ -60,61 +66,69 @@ public abstract class UltraCommand {
      * @param sender The person that executed this command either a player or the console.
      * @param args   The arguments that are bound for this command.
      */
-    public void execute(UltraSender sender, String cmd, List<String> args) {
-        this.sender = sender;
-        this.label = cmd;
-        this.args = args;
-
-        try {
-            if (isRequirePermission() && !sender.hasPermission(getPermission())) {
-                throw new CommandException("§cYou do not have permission to execute this command.");
-            }
-
-            if (!isAllowConsole() && getPlayer() == null)
-                throw new CommandException("Sorry, console is not allowed to execute this command");
-
-            preConditions();
-
-            if (hasChildren() && args.size() > 0) {
-                String label = args.get(0);
-
-                UltraCommand child = matchExactChild(label);
-                if (child != null) {
-                    // Avoid modifying args, since it might be unmodifiable
-                    List<String> copy = new ArrayList<>(args);
-                    copy.remove(0);
-                    child.execute(sender, label, copy);
-                    return; // Don't perform the help on this command if a match is found
-                } // If the subcommand isn't found, call this.preform() since it sends help
-            }
-
-            if (checkParams) {
-                try {
-                    parseArgs();
-                } catch(CommandException e) {
-                    sendHelp();
-                    throw e;
-                }
-            }
+    public void execute(final UltraSender sender, final String cmd, final List<String> args) {
+        Runnable task = () -> {
+            this.sender = sender;
+            this.label = cmd;
+            this.args = args;
 
             try {
-                this.perform();
-            } catch (Exception e) {
-                if (e instanceof CommandException) {
-                    throw e;
-                } else {
-                    System.out.println("An exception occurred while handling a command: " + getFullCommand() + " " + String.join(" ", args));
-                    e.printStackTrace();
-                    tell(getErrorMessage());
+                if (isRequirePermission() && !sender.hasPermission(getPermission())) {
+                    throw new CommandException("§cYou do not have permission to execute this command.");
                 }
+
+                if (!isAllowConsole() && getPlayer() == null)
+                    throw new CommandException("Sorry, console is not allowed to execute this command");
+
+                preConditions();
+
+                if (hasChildren() && args.size() > 0) {
+                    String label = args.get(0);
+
+                    UltraCommand child = matchExactChild(label);
+                    if (child != null) {
+                        // Avoid modifying args, since it might be unmodifiable
+                        List<String> copy = new ArrayList<>(args);
+                        copy.remove(0);
+                        child.execute(sender, label, copy);
+                        return; // Don't perform the help on this command if a match is found
+                    } // If the subcommand isn't found, call this.preform() since it sends help
+                }
+
+                if (checkParams) {
+                    try {
+                        parseArgs();
+                    } catch (CommandException e) {
+                        sendHelp();
+                        throw e;
+                    }
+                }
+
+                try {
+                    this.perform();
+                } catch (Exception e) {
+                    if (e instanceof CommandException) {
+                        throw e;
+                    } else {
+                        System.out.println("An exception occurred while handling a command: " + getFullCommand() + " " + String.join(" ", args));
+                        e.printStackTrace();
+                        tell(getErrorMessage());
+                    }
+                }
+            } catch (CommandException exception) {
+                // - This is our main exception to catch all the little things mostly for parsing.
+                tell(exception.getMessage());
+            } finally {
+                // Clean up params.
+                this.sender = null;
+                this.args = null;
             }
-        } catch (CommandException exception) {
-            // - This is our main exception to catch all the little things mostly for parsing.
-            tell(exception.getMessage());
-        } finally {
-            // Clean up params.
-            sender = null;
-            args = null;
+        };
+
+        if (async) {
+            executor.submit(task);
+        } else {
+            task.run();
         }
     }
 
