@@ -2,7 +2,6 @@ package net.ultragrav.command.registry.spigot;
 
 import io.netty.channel.ChannelDuplexHandler;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelPromise;
 import net.minecraft.server.v1_12_R1.PacketPlayInTabComplete;
 import net.minecraft.server.v1_12_R1.PacketPlayOutTabComplete;
 import net.ultragrav.command.registry.RegistryManager;
@@ -34,6 +33,8 @@ public class SpigotPacketHandler extends ChannelDuplexHandler {
                     ((CraftPlayer) player).getHandle().playerConnection.sendPacket(tabCompletePacket);
                 });
             }
+        } else {
+            super.channelRead(ctx, msg);
         }
     }
 }
