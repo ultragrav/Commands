@@ -29,6 +29,8 @@ public class Parameter<T> {
     protected boolean defaultValueSet;
     @Setter
     protected boolean varArg;
+    @Setter
+    protected boolean overrideRequireAsync;
 
     protected List<ParameterCondition<T>> conditions;
 
@@ -48,6 +50,16 @@ public class Parameter<T> {
         if (!this.defaultValueSet)
             return provider.defaultNullValue();
         return this.defaultValue;
+    }
+
+    public void check(UltraCommand cmd) {
+        if (!overrideRequireAsync) {
+            if (provider.requireAsync() && !cmd.isAsync()) {
+                throw new IllegalStateException("Provider (" + provider.getClass().getName() + ") must be used " +
+                        "asynchronously, but command is not async. If you are 100% sure you know what you are doing, " +
+                        "set overrideRequireAsync to true in your parameter.");
+            }
+        }
     }
 
     public T convert(List<String> str, UltraSender sender) {
@@ -71,6 +83,7 @@ public class Parameter<T> {
         private T defaultValue = (T) DEFAULT_VALUE_DEFAULT;
         private boolean defaultValueSet = false;
         private boolean varArg = false;
+        private boolean overrideRequireAsync = false;
         private List<ParameterCondition<T>> conditions = new ArrayList<>();
 
         private final Consumer<Parameter<T>> onBuild;
@@ -141,8 +154,20 @@ public class Parameter<T> {
             return this;
         }
 
+        /**
+         * Set whether this Parameter should override the requireAsync flag
+         * THIS IS USUALLY A BAD IDEA, ONLY USE IF YOU KNOW WHAT YOU ARE DOING
+         *
+         * @param overrideRequireAsync Override requireAsync
+         * @return {@code this}
+         */
+        public Builder<T> overrideRequireAsync(boolean overrideRequireAsync) {
+            this.overrideRequireAsync = overrideRequireAsync;
+            return this;
+        }
+
         public Parameter<T> build() {
-            Parameter<T> param = new Parameter<>(provider, name, defaultDesc, defaultValue, defaultValueSet, varArg, conditions);
+            Parameter<T> param = new Parameter<>(provider, name, defaultDesc, defaultValue, defaultValueSet, varArg, overrideRequireAsync, conditions);
             if (this.onBuild != null) {
                 this.onBuild.accept(param);
             }

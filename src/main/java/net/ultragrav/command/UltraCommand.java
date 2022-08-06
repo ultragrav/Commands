@@ -283,6 +283,7 @@ public abstract class UltraCommand {
         List<String> argsCopy2 = new ArrayList<>(argsCopy);
         for (Parameter<?> param : parameters) {
             try {
+                param.check(this);
                 param.convert(argsCopy, sender);
             } catch(CommandException ignored) {
             }
@@ -316,6 +317,7 @@ public abstract class UltraCommand {
                     throw new CommandException("Missing required argument: " + param.getName());
                 }
             } else {
+                param.check(this);
                 convertedArgs.add(param.convert(argsCopy, sender));
             }
         }
