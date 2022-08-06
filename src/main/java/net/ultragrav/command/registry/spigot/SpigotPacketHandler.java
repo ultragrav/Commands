@@ -2,15 +2,38 @@ package net.ultragrav.command.registry.spigot;
 
 import io.netty.channel.ChannelDuplexHandler;
 import io.netty.channel.ChannelHandlerContext;
-import net.minecraft.server.v1_12_R1.PacketPlayInTabComplete;
-import net.minecraft.server.v1_12_R1.PacketPlayOutTabComplete;
 import net.ultragrav.command.registry.RegistryManager;
-import org.bukkit.craftbukkit.v1_12_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 public class SpigotPacketHandler extends ChannelDuplexHandler {
+    private static Class<?> packetPlayInTabComplete;
+    private static Class<?> packetPlayOutTabComplete;
+
+    private static Field commandField;
+
+    private static Constructor<?> packetPlayOutTabCompleteConstructor;
+
+    static {
+        String nmsVersion = UtilSpigot.nmsVersion;
+
+        try {
+            packetPlayInTabComplete = Class.forName("net.minecraft.server." + nmsVersion + ".PacketPlayInTabComplete");
+            packetPlayOutTabComplete = Class.forName("net.minecraft.server." + nmsVersion + ".PacketPlayOutTabComplete");
+
+            commandField = packetPlayInTabComplete.getDeclaredFields()[0];
+            commandField.setAccessible(true);
+
+            packetPlayOutTabCompleteConstructor = packetPlayOutTabComplete.getConstructor(String[].class);
+        } catch (ClassNotFoundException | NoSuchMethodException e) {
+            e.printStackTrace();
+        }
+    }
+
     private Player player;
 
     public SpigotPacketHandler(Player player) {
@@ -19,18 +42,23 @@ public class SpigotPacketHandler extends ChannelDuplexHandler {
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        if (msg instanceof PacketPlayInTabComplete) {
+        if (packetPlayInTabComplete.isInstance(msg)) {
             RegistrySpigot registrySpigot = (RegistrySpigot) RegistryManager.getCurrentRegistry();
 
-            PacketPlayInTabComplete packet = (PacketPlayInTabComplete) msg;
-            boolean isAsync = registrySpigot.checkAsync(packet.a());
+            String command = (String) commandField.get(msg);
+            boolean isAsync = registrySpigot.checkAsync(command);
             if (!isAsync) {
                 super.channelRead(ctx, msg);
             } else {
                 registrySpigot.getTabCompleteExecutor().submit(() -> {
-                    List<String> completions = registrySpigot.tabCompletePacket(player, packet.a());
-                    PacketPlayOutTabComplete tabCompletePacket = new PacketPlayOutTabComplete(completions.toArray(new String[0]));
-                    ((CraftPlayer) player).getHandle().playerConnection.sendPacket(tabCompletePacket);
+                    List<String> completions = registrySpigot.tabCompletePacket(player, command);
+                    try {
+                        Object packet = packetPlayOutTabCompleteConstructor
+                                .newInstance(new Object[]{completions.toArray(new String[0])});
+                        UtilSpigot.sendPacket(player, packet);
+                    } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
+                        e.printStackTrace();
+                    }
                 });
             }
         } else {

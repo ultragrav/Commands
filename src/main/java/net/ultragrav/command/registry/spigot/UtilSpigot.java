@@ -1,11 +1,11 @@
 package net.ultragrav.command.registry.spigot;
 
-import net.minecraft.server.v1_12_R1.PlayerConnection;
+import io.netty.channel.Channel;
 import net.ultragrav.command.wrapper.player.impl.PlayerSpigot;
 import net.ultragrav.command.wrapper.sender.UltraSender;
 import net.ultragrav.command.wrapper.sender.impl.SenderSpigot;
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
-import org.bukkit.craftbukkit.v1_12_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventPriority;
@@ -15,12 +15,39 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.EventExecutor;
 import org.bukkit.plugin.IllegalPluginAccessException;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredListener;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 public class UtilSpigot {
+    static String nmsVersion;
+    private static Class<?> craftPlayerClass;
+    private static Method getHandleMethod;
+    private static Method getPlayerConnectionMethod;
+    private static Field networkManagerField;
+    private static Field channelField;
+    private static Method sendPacketMethod;
+
+    static {
+        try {
+            nmsVersion = Bukkit.getServer().getClass().getName().split("\\.")[3];
+            craftPlayerClass = Class.forName("org.bukkit.craftbukkit." + nmsVersion + ".entity.CraftPlayer");
+            getHandleMethod = craftPlayerClass.getMethod("getHandle");
+            getPlayerConnectionMethod = Class.forName("net.minecraft.server." + nmsVersion + ".EntityPlayer")
+                    .getMethod("getPlayerConnection");
+            networkManagerField = Class.forName("net.minecraft.server." + nmsVersion + ".PlayerConnection")
+                    .getDeclaredField("networkManager");
+            channelField = Class.forName("net.minecraft.server." + nmsVersion + ".NetworkManager")
+                    .getDeclaredField("channel");
+            sendPacketMethod = Class.forName("net.minecraft.server." + nmsVersion + ".PlayerConnection")
+                    .getMethod("sendPacket", Class.forName("net.minecraft.server." + nmsVersion + ".Packet"));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public static UltraSender wrap(CommandSender sender) {
         if (sender instanceof Player) {
             return new PlayerSpigot((Player) sender);
@@ -42,7 +69,8 @@ public class UtilSpigot {
     }
 
     private static void registerEvent(Class<? extends Event> event, EventExecutor executor) {
-        getEventListeners(event).register(new RegisteredListener(new Listener() {}, executor, EventPriority.NORMAL,
+        getEventListeners(event).register(new RegisteredListener(new Listener() {
+        }, executor, EventPriority.NORMAL,
                 DummyPlugin.instance, false));
     }
 
@@ -73,29 +101,55 @@ public class UtilSpigot {
 
     public static void inject(Player player) {
         //Inject a packet listener into the player's connection.
-        CraftPlayer craftPlayer = (CraftPlayer) player;
-        PlayerConnection connection = craftPlayer.getHandle().playerConnection;
-        connection.networkManager.channel.eventLoop().submit(() -> {
-            if (connection.networkManager.channel.pipeline().get("skyblock_packet_listener") != null) {
-                //Remove it.
-                connection.networkManager.channel.pipeline().remove("skyblock_packet_listener");
+        try {
+            Object entityPlayer = getHandleMethod.invoke(player);
+            Object connection = getPlayerConnectionMethod.invoke(player);
+            Object networkManager = networkManagerField.get(connection);
+            Channel channel = (Channel) channelField.get(networkManager);
 
-            }
-            //Add it.
-            connection.networkManager.channel.pipeline()
-                    .addBefore("packet_handler", "skyblock_packet_listener", new SpigotPacketHandler(player));
-        });
+            channel.eventLoop().submit(() -> {
+                if (channel.pipeline().get("skyblock_packet_listener") != null) {
+                    //Remove it.
+                    channel.pipeline().remove("skyblock_packet_listener");
+
+                }
+                //Add it.
+                channel.pipeline()
+                        .addBefore("packet_handler", "skyblock_packet_listener", new SpigotPacketHandler(player));
+            });
+        } catch (IllegalAccessException | InvocationTargetException e) {
+            e.printStackTrace();
+        }
     }
 
     public static void unInject(Player player) {
         //Remove the packet listener from the player's connection.
-        CraftPlayer craftPlayer = (CraftPlayer) player;
-        PlayerConnection connection = craftPlayer.getHandle().playerConnection;
-        connection.networkManager.channel.eventLoop().submit(() -> {
-            if (connection.networkManager.channel.pipeline().get("skyblock_packet_listener") != null) {
-                //Remove it.
-                connection.networkManager.channel.pipeline().remove("skyblock_packet_listener");
-            }
-        });
+
+        try {
+            Object entityPlayer = getHandleMethod.invoke(player);
+            Object connection = getPlayerConnectionMethod.invoke(player);
+            Object networkManager = networkManagerField.get(connection);
+            Channel channel = (Channel) channelField.get(networkManager);
+
+            channel.eventLoop().submit(() -> {
+                if (channel.pipeline().get("skyblock_packet_listener") != null) {
+                    //Remove it.
+                    channel.pipeline().remove("skyblock_packet_listener");
+
+                }
+            });
+        } catch (IllegalAccessException | InvocationTargetException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void sendPacket(Player player, Object packet) {
+        try {
+            Object entityPlayer = getHandleMethod.invoke(player);
+            Object connection = getPlayerConnectionMethod.invoke(player);
+            sendPacketMethod.invoke(connection, packet);
+        } catch (IllegalAccessException | InvocationTargetException e) {
+            e.printStackTrace();
+        }
     }
 }
