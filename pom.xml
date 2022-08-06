@@ -37,6 +37,10 @@
             <id>velocity</id>
             <url>https://repo.velocitypowered.com/snapshots/</url>
         </repository>
+        <repository>
+            <id>ultragrav</id>
+            <url>https://mvn.ultragrav.net/</url>
+        </repository>
     </repositories>
 
     <dependencies>
