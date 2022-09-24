@@ -25,7 +25,7 @@ public class UtilSpigot {
     static String nmsVersion;
     private static Class<?> craftPlayerClass;
     private static Method getHandleMethod;
-    private static Method getPlayerConnectionMethod;
+    private static Field playerConnectionField;
     private static Field networkManagerField;
     private static Field channelField;
     private static Method sendPacketMethod;
@@ -35,8 +35,8 @@ public class UtilSpigot {
             nmsVersion = Bukkit.getServer().getClass().getName().split("\\.")[3];
             craftPlayerClass = Class.forName("org.bukkit.craftbukkit." + nmsVersion + ".entity.CraftPlayer");
             getHandleMethod = craftPlayerClass.getMethod("getHandle");
-            getPlayerConnectionMethod = Class.forName("net.minecraft.server." + nmsVersion + ".EntityPlayer")
-                    .getMethod("getPlayerConnection");
+            playerConnectionField = Class.forName("net.minecraft.server." + nmsVersion + ".EntityPlayer")
+                    .getField("playerConnection");
             networkManagerField = Class.forName("net.minecraft.server." + nmsVersion + ".PlayerConnection")
                     .getDeclaredField("networkManager");
             channelField = Class.forName("net.minecraft.server." + nmsVersion + ".NetworkManager")
@@ -103,7 +103,7 @@ public class UtilSpigot {
         //Inject a packet listener into the player's connection.
         try {
             Object entityPlayer = getHandleMethod.invoke(player);
-            Object connection = getPlayerConnectionMethod.invoke(player);
+            Object connection = playerConnectionField.get(player);
             Object networkManager = networkManagerField.get(connection);
             Channel channel = (Channel) channelField.get(networkManager);
 
@@ -127,7 +127,7 @@ public class UtilSpigot {
 
         try {
             Object entityPlayer = getHandleMethod.invoke(player);
-            Object connection = getPlayerConnectionMethod.invoke(player);
+            Object connection = playerConnectionField.get(player);
             Object networkManager = networkManagerField.get(connection);
             Channel channel = (Channel) channelField.get(networkManager);
 
@@ -146,7 +146,7 @@ public class UtilSpigot {
     public static void sendPacket(Player player, Object packet) {
         try {
             Object entityPlayer = getHandleMethod.invoke(player);
-            Object connection = getPlayerConnectionMethod.invoke(player);
+            Object connection = playerConnectionField.get(player);
             sendPacketMethod.invoke(connection, packet);
         } catch (IllegalAccessException | InvocationTargetException e) {
             e.printStackTrace();
