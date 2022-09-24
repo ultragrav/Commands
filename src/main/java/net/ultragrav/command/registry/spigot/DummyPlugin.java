@@ -17,6 +17,8 @@ import java.util.logging.Logger;
 public class DummyPlugin implements Plugin {
     public static final DummyPlugin instance = new DummyPlugin();
 
+    private static final PluginDescriptionFile description = new PluginDescriptionFile("Commands", "$", "net.ultragrav.command.registry.spigot.DummyPlugin");
+
     private DummyPlugin() {}
 
     @Override
@@ -26,7 +28,7 @@ public class DummyPlugin implements Plugin {
 
     @Override
     public PluginDescriptionFile getDescription() {
-        return null;
+        return description;
     }
 
     @Override
