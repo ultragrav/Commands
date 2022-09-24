@@ -36,7 +36,7 @@ public class UtilSpigot {
             craftPlayerClass = Class.forName("org.bukkit.craftbukkit." + nmsVersion + ".entity.CraftPlayer");
             getHandleMethod = craftPlayerClass.getMethod("getHandle");
             playerConnectionField = Class.forName("net.minecraft.server." + nmsVersion + ".EntityPlayer")
-                    .getField("playerConnection");
+                    .getDeclaredField("playerConnection");
             networkManagerField = Class.forName("net.minecraft.server." + nmsVersion + ".PlayerConnection")
                     .getDeclaredField("networkManager");
             channelField = Class.forName("net.minecraft.server." + nmsVersion + ".NetworkManager")
@@ -103,7 +103,7 @@ public class UtilSpigot {
         //Inject a packet listener into the player's connection.
         try {
             Object entityPlayer = getHandleMethod.invoke(player);
-            Object connection = playerConnectionField.get(player);
+            Object connection = playerConnectionField.get(entityPlayer);
             Object networkManager = networkManagerField.get(connection);
             Channel channel = (Channel) channelField.get(networkManager);
 
@@ -127,7 +127,7 @@ public class UtilSpigot {
 
         try {
             Object entityPlayer = getHandleMethod.invoke(player);
-            Object connection = playerConnectionField.get(player);
+            Object connection = playerConnectionField.get(entityPlayer);
             Object networkManager = networkManagerField.get(connection);
             Channel channel = (Channel) channelField.get(networkManager);
 
@@ -146,7 +146,7 @@ public class UtilSpigot {
     public static void sendPacket(Player player, Object packet) {
         try {
             Object entityPlayer = getHandleMethod.invoke(player);
-            Object connection = playerConnectionField.get(player);
+            Object connection = playerConnectionField.get(entityPlayer);
             sendPacketMethod.invoke(connection, packet);
         } catch (IllegalAccessException | InvocationTargetException e) {
             e.printStackTrace();
