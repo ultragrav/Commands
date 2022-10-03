@@ -20,7 +20,7 @@ public abstract class UltraProvider<T> {
     }
 
     public T convert(List<String> toConvert, UltraSender sender) throws CommandException {
-        return convert(toConvert.remove(0));
+        return convert(toConvert.remove(0), sender);
     }
 
     @Deprecated
