@@ -1,8 +1,10 @@
-package net.ultragrav.command.registry.spigot;
+package net.ultragrav.command.registry.spigot.handler;
 
 import io.netty.channel.ChannelDuplexHandler;
 import io.netty.channel.ChannelHandlerContext;
 import net.ultragrav.command.registry.RegistryManager;
+import net.ultragrav.command.registry.spigot.RegistrySpigot;
+import net.ultragrav.command.registry.spigot.UtilSpigot;
 import org.bukkit.entity.Player;
 
 import java.lang.reflect.Constructor;
@@ -10,7 +12,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
-public class SpigotPacketHandler extends ChannelDuplexHandler {
+public class OldSpigotPacketHandler extends ChannelDuplexHandler {
     private static Class<?> packetPlayInTabComplete;
     private static Class<?> packetPlayOutTabComplete;
 
@@ -36,7 +38,7 @@ public class SpigotPacketHandler extends ChannelDuplexHandler {
 
     private Player player;
 
-    public SpigotPacketHandler(Player player) {
+    public OldSpigotPacketHandler(Player player) {
         this.player = player;
     }
 
