@@ -126,6 +126,10 @@ public class UtilSpigot {
     }
 
     public static void inject(Player player) {
+        if (majorVersion >= 19) {
+            return; // Disable packet handling for 1.19 temporarily
+        }
+
         //Inject a packet listener into the player's connection.
         try {
             Object entityPlayer = getHandleMethod.invoke(player);
@@ -149,6 +153,9 @@ public class UtilSpigot {
     }
 
     public static void unInject(Player player) {
+        if (majorVersion >= 19) {
+            return; // Disable packet handling for 1.19 temporarily
+        }
         //Remove the packet listener from the player's connection.
 
         try {
