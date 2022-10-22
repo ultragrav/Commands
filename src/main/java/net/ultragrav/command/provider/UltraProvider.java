@@ -33,7 +33,7 @@ public abstract class UltraProvider<T> {
     }
 
     public List<String> tabComplete(List<String> toComplete, UltraSender sender) {
-        return tabComplete(String.join(" ", toComplete));
+        return tabComplete(String.join(" ", toComplete), sender);
     }
 
     public abstract String getArgumentDescription();

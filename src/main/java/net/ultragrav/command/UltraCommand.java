@@ -243,7 +243,7 @@ public abstract class UltraCommand {
         args = new ArrayList<>(args); // Avoid modifying original
         if (requirePermission && !sender.hasPermission(getPermission()))
             return new ArrayList<>();
-        List<String> compl = new ArrayList<>();
+        List<String> compl = null;
         if (hasChildren()) {
             compl = getTabCompletionsSubCommand(sender, args);
         }
