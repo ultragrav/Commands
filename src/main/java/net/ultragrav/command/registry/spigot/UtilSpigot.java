@@ -43,18 +43,18 @@ public class UtilSpigot {
             nmsVersion = Bukkit.getServer().getClass().getName().split("\\.")[3];
             majorVersion = Integer.parseInt(nmsVersion.split("_")[1]);
             if (majorVersion >= 19) { // TODO: Figure out which version changed this
-                craftPlayerClass = Class.forName("org.bukkit.craftbukkit." + nmsVersion + ".entity.CraftPlayer");
-                getHandleMethod = craftPlayerClass.getMethod("getHandle");
-                playerConnectionField = Class.forName("net.minecraft.server.level.EntityPlayer")
-                        .getDeclaredField("connection");
-                networkManagerField = Class.forName("net.minecraft.server.network.PlayerConnection")
-                        .getDeclaredField("connection");
-                channelField = Class.forName("net.minecraft.network.NetworkManager")
-                        .getDeclaredField("channel");
-                sendPacketMethod = Class.forName("net.minecraft.server.network.PlayerConnection")
-                        .getMethod("send", Class.forName("net.minecraft.network.protocol.Packet"));
-
-                packetHandlerSupplier = NewSpigotPacketHandler::new;
+//                craftPlayerClass = Class.forName("org.bukkit.craftbukkit." + nmsVersion + ".entity.CraftPlayer");
+//                getHandleMethod = craftPlayerClass.getMethod("getHandle");
+//                playerConnectionField = Class.forName("net.minecraft.server.level.EntityPlayer")
+//                        .getDeclaredField("connection");
+//                networkManagerField = Class.forName("net.minecraft.server.network.PlayerConnection")
+//                        .getDeclaredField("connection");
+//                channelField = Class.forName("net.minecraft.network.NetworkManager")
+//                        .getDeclaredField("channel");
+//                sendPacketMethod = Class.forName("net.minecraft.server.network.PlayerConnection")
+//                        .getMethod("send", Class.forName("net.minecraft.network.protocol.Packet"));
+//
+//                packetHandlerSupplier = NewSpigotPacketHandler::new;
             } else {
                 craftPlayerClass = Class.forName("org.bukkit.craftbukkit." + nmsVersion + ".entity.CraftPlayer");
                 getHandleMethod = craftPlayerClass.getMethod("getHandle");
