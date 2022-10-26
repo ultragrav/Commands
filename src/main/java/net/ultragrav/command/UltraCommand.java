@@ -282,6 +282,10 @@ public abstract class UltraCommand {
         List<String> argsCopy = new ArrayList<>(args);
         List<String> argsCopy2 = new ArrayList<>(argsCopy);
         for (Parameter<?> param : parameters) {
+            if (argsCopy.size() == 1) {
+                return param.getProvider().tabComplete(argsCopy2, sender);
+            }
+
             try {
                 param.check(this);
                 param.convert(argsCopy, sender);
