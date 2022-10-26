@@ -9,6 +9,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -38,13 +39,14 @@ public class OfflinePlayerProvider extends UltraProvider<OfflinePlayer> {
 
     @Override
     public List<String> tabComplete(@NonNull String toComplete, UltraSender sender) {
-        List<String> toSend = new ArrayList<>();
-
-        for (OfflinePlayer player : Bukkit.getOfflinePlayers())
-            if ((player.isOnline() || player.hasPlayedBefore()) && player.getName().toLowerCase().startsWith(toComplete))
-                toSend.add(player.getName());
-
-        return toSend;
+//        List<String> toSend = new ArrayList<>();
+//
+//        for (OfflinePlayer player : Bukkit.getOfflinePlayers())
+//            if ((player.isOnline() || player.hasPlayedBefore()) && player.getName().toLowerCase().startsWith(toComplete))
+//                toSend.add(player.getName());
+//
+//        return toSend;
+        return Collections.emptyList();
     }
 
     @Override
