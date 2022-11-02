@@ -289,7 +289,7 @@ public abstract class UltraCommand {
             try {
                 param.check(this);
                 param.convert(argsCopy, sender);
-            } catch(CommandException ignored) {
+            } catch (CommandException ignored) {
             }
 
             if (argsCopy.isEmpty()) {
@@ -317,6 +317,8 @@ public abstract class UltraCommand {
             if (argsCopy.isEmpty()) {
                 if (param.isOptional()) {
                     convertedArgs.add(param.getDefaultValue());
+                } else if (param.isVarArg()) {
+                    convertedArgs.add(new ArrayList<>());
                 } else {
                     throw new CommandException("Missing required argument: " + param.getName());
                 }
