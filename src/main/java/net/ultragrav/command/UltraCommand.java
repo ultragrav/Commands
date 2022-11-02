@@ -317,8 +317,9 @@ public abstract class UltraCommand {
             if (argsCopy.isEmpty()) {
                 if (param.isOptional()) {
                     convertedArgs.add(param.getDefaultValue());
-                } else if (param.isVarArg()) {
+                } else if (param == parameters.get(parameters.size() - 1) && param.isVarArg()) {
                     convertedArgs.add(new ArrayList<>());
+                    return;
                 } else {
                     throw new CommandException("Missing required argument: " + param.getName());
                 }
