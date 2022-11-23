@@ -243,7 +243,7 @@ public abstract class UltraCommand {
         args = new ArrayList<>(args); // Avoid modifying original
         if (requirePermission && !sender.hasPermission(getPermission()))
             return new ArrayList<>();
-        List<String> compl = new ArrayList<>();
+        List<String> compl = null;
         if (hasChildren()) {
             compl = getTabCompletionsSubCommand(sender, args);
         }
@@ -282,10 +282,14 @@ public abstract class UltraCommand {
         List<String> argsCopy = new ArrayList<>(args);
         List<String> argsCopy2 = new ArrayList<>(argsCopy);
         for (Parameter<?> param : parameters) {
+            if (argsCopy.size() == 1) {
+                return param.getProvider().tabComplete(argsCopy2, sender);
+            }
+
             try {
                 param.check(this);
                 param.convert(argsCopy, sender);
-            } catch(CommandException ignored) {
+            } catch (CommandException ignored) {
             }
 
             if (argsCopy.isEmpty()) {
@@ -313,6 +317,9 @@ public abstract class UltraCommand {
             if (argsCopy.isEmpty()) {
                 if (param.isOptional()) {
                     convertedArgs.add(param.getDefaultValue());
+                } else if (param == parameters.get(parameters.size() - 1) && param.isVarArg()) {
+                    convertedArgs.add(new ArrayList<>());
+                    return;
                 } else {
                     throw new CommandException("Missing required argument: " + param.getName());
                 }

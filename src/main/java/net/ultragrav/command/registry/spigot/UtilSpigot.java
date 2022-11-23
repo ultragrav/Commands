@@ -1,6 +1,9 @@
 package net.ultragrav.command.registry.spigot;
 
 import io.netty.channel.Channel;
+import io.netty.channel.ChannelDuplexHandler;
+import net.ultragrav.command.registry.spigot.handler.NewSpigotPacketHandler;
+import net.ultragrav.command.registry.spigot.handler.OldSpigotPacketHandler;
 import net.ultragrav.command.wrapper.player.impl.PlayerSpigot;
 import net.ultragrav.command.wrapper.sender.UltraSender;
 import net.ultragrav.command.wrapper.sender.impl.SenderSpigot;
@@ -20,9 +23,12 @@ import org.bukkit.plugin.RegisteredListener;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 public class UtilSpigot {
-    static String nmsVersion;
+    public static String nmsVersion;
+    public static int majorVersion;
     private static Class<?> craftPlayerClass;
     private static Method getHandleMethod;
     private static Field playerConnectionField;
@@ -30,19 +36,39 @@ public class UtilSpigot {
     private static Field channelField;
     private static Method sendPacketMethod;
 
+    private static Function<Player, ChannelDuplexHandler> packetHandlerSupplier;
+
     static {
         try {
             nmsVersion = Bukkit.getServer().getClass().getName().split("\\.")[3];
-            craftPlayerClass = Class.forName("org.bukkit.craftbukkit." + nmsVersion + ".entity.CraftPlayer");
-            getHandleMethod = craftPlayerClass.getMethod("getHandle");
-            playerConnectionField = Class.forName("net.minecraft.server." + nmsVersion + ".EntityPlayer")
-                    .getDeclaredField("playerConnection");
-            networkManagerField = Class.forName("net.minecraft.server." + nmsVersion + ".PlayerConnection")
-                    .getDeclaredField("networkManager");
-            channelField = Class.forName("net.minecraft.server." + nmsVersion + ".NetworkManager")
-                    .getDeclaredField("channel");
-            sendPacketMethod = Class.forName("net.minecraft.server." + nmsVersion + ".PlayerConnection")
-                    .getMethod("sendPacket", Class.forName("net.minecraft.server." + nmsVersion + ".Packet"));
+            majorVersion = Integer.parseInt(nmsVersion.split("_")[1]);
+            if (majorVersion >= 19) { // TODO: Figure out which version changed this
+//                craftPlayerClass = Class.forName("org.bukkit.craftbukkit." + nmsVersion + ".entity.CraftPlayer");
+//                getHandleMethod = craftPlayerClass.getMethod("getHandle");
+//                playerConnectionField = Class.forName("net.minecraft.server.level.EntityPlayer")
+//                        .getDeclaredField("connection");
+//                networkManagerField = Class.forName("net.minecraft.server.network.PlayerConnection")
+//                        .getDeclaredField("connection");
+//                channelField = Class.forName("net.minecraft.network.NetworkManager")
+//                        .getDeclaredField("channel");
+//                sendPacketMethod = Class.forName("net.minecraft.server.network.PlayerConnection")
+//                        .getMethod("send", Class.forName("net.minecraft.network.protocol.Packet"));
+//
+//                packetHandlerSupplier = NewSpigotPacketHandler::new;
+            } else {
+                craftPlayerClass = Class.forName("org.bukkit.craftbukkit." + nmsVersion + ".entity.CraftPlayer");
+                getHandleMethod = craftPlayerClass.getMethod("getHandle");
+                playerConnectionField = Class.forName("net.minecraft.server." + nmsVersion + ".EntityPlayer")
+                        .getDeclaredField("playerConnection");
+                networkManagerField = Class.forName("net.minecraft.server." + nmsVersion + ".PlayerConnection")
+                        .getDeclaredField("networkManager");
+                channelField = Class.forName("net.minecraft.server." + nmsVersion + ".NetworkManager")
+                        .getDeclaredField("channel");
+                sendPacketMethod = Class.forName("net.minecraft.server." + nmsVersion + ".PlayerConnection")
+                        .getMethod("sendPacket", Class.forName("net.minecraft.server." + nmsVersion + ".Packet"));
+
+                packetHandlerSupplier = OldSpigotPacketHandler::new;
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -100,6 +126,10 @@ public class UtilSpigot {
     }
 
     public static void inject(Player player) {
+        if (majorVersion >= 19) {
+            return; // Disable packet handling for 1.19 temporarily
+        }
+
         //Inject a packet listener into the player's connection.
         try {
             Object entityPlayer = getHandleMethod.invoke(player);
@@ -108,14 +138,14 @@ public class UtilSpigot {
             Channel channel = (Channel) channelField.get(networkManager);
 
             channel.eventLoop().submit(() -> {
-                if (channel.pipeline().get("skyblock_packet_listener") != null) {
+                if (channel.pipeline().get("commands_packet_listener") != null) {
                     //Remove it.
-                    channel.pipeline().remove("skyblock_packet_listener");
+                    channel.pipeline().remove("commands_packet_listener");
 
                 }
                 //Add it.
                 channel.pipeline()
-                        .addBefore("packet_handler", "skyblock_packet_listener", new SpigotPacketHandler(player));
+                        .addBefore("packet_handler", "commands_packet_listener", packetHandlerSupplier.apply(player));
             });
         } catch (IllegalAccessException | InvocationTargetException e) {
             e.printStackTrace();
@@ -123,6 +153,9 @@ public class UtilSpigot {
     }
 
     public static void unInject(Player player) {
+        if (majorVersion >= 19) {
+            return; // Disable packet handling for 1.19 temporarily
+        }
         //Remove the packet listener from the player's connection.
 
         try {
@@ -132,9 +165,9 @@ public class UtilSpigot {
             Channel channel = (Channel) channelField.get(networkManager);
 
             channel.eventLoop().submit(() -> {
-                if (channel.pipeline().get("skyblock_packet_listener") != null) {
+                if (channel.pipeline().get("commands_packet_listener") != null) {
                     //Remove it.
-                    channel.pipeline().remove("skyblock_packet_listener");
+                    channel.pipeline().remove("commands_packet_listener");
 
                 }
             });
