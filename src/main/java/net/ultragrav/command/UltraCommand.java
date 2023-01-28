@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 @Getter
 public abstract class UltraCommand {
     private static final String DEFAULT_HELP_FORMAT = "&8/&7<cmd> &f<args>";
-    private static final String DEFAULT_HELP_HEADER = "&c&lUsage";
+    private static final String DEFAULT_HELP_HEADER = "   &8&l&m------&c&l Usage &8&l&m------";
     private static final String DEFAULT_HELP_FOOTER = "";
     private static final String DEFAULT_ERROR_MESSAGE = "&cAn error occurred, please report this to an administrator.";
 
