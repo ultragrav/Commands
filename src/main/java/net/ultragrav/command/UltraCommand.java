@@ -18,8 +18,8 @@ import java.util.stream.Collectors;
 @SuppressWarnings("unchecked")
 @Getter
 public abstract class UltraCommand {
-    private static final String DEFAULT_HELP_FORMAT = "/<cmd> <args>";
-    private static final String DEFAULT_HELP_HEADER = "&cUsage:";
+    private static final String DEFAULT_HELP_FORMAT = "&8/&7<cmd> &f<args>";
+    private static final String DEFAULT_HELP_HEADER = "&c&lUsage";
     private static final String DEFAULT_HELP_FOOTER = "";
     private static final String DEFAULT_ERROR_MESSAGE = "&cAn error occurred, please report this to an administrator.";
 
