@@ -68,6 +68,9 @@ public final class RegistrySpigot implements Registry {
     }
 
     public boolean checkAsync(String cmd) {
+        if (!cmd.startsWith("/")) {
+            return false;
+        }
         String cmdName = cmd.split(" ")[0];
         Command command = commandMap.getCommand(cmdName);
         if (!(command instanceof ExecutorSpigot)) {

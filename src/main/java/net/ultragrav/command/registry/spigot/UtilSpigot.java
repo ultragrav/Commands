@@ -141,8 +141,8 @@ public class UtilSpigot {
                 if (channel.pipeline().get("commands_packet_listener") != null) {
                     //Remove it.
                     channel.pipeline().remove("commands_packet_listener");
-
                 }
+
                 //Add it.
                 channel.pipeline()
                         .addBefore("packet_handler", "commands_packet_listener", packetHandlerSupplier.apply(player));
@@ -156,8 +156,8 @@ public class UtilSpigot {
         if (majorVersion >= 19) {
             return; // Disable packet handling for 1.19 temporarily
         }
-        //Remove the packet listener from the player's connection.
 
+        //Remove the packet listener from the player's connection.
         try {
             Object entityPlayer = getHandleMethod.invoke(player);
             Object connection = playerConnectionField.get(entityPlayer);

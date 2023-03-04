@@ -45,23 +45,27 @@ public class OldSpigotPacketHandler extends ChannelDuplexHandler {
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         if (packetPlayInTabComplete.isInstance(msg)) {
-            RegistrySpigot registrySpigot = (RegistrySpigot) RegistryManager.getCurrentRegistry();
+            try {
+                RegistrySpigot registrySpigot = (RegistrySpigot) RegistryManager.getCurrentRegistry();
 
-            String command = (String) commandField.get(msg);
-            boolean isAsync = registrySpigot.checkAsync(command);
-            if (!isAsync) {
-                super.channelRead(ctx, msg);
-            } else {
-                registrySpigot.getTabCompleteExecutor().submit(() -> {
-                    List<String> completions = registrySpigot.tabCompletePacket(player, command);
-                    try {
-                        Object packet = packetPlayOutTabCompleteConstructor
-                                .newInstance(new Object[]{completions.toArray(new String[0])});
-                        UtilSpigot.sendPacket(player, packet);
-                    } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
-                        e.printStackTrace();
-                    }
-                });
+                String command = (String) commandField.get(msg);
+                boolean isAsync = registrySpigot.checkAsync(command);
+                if (!isAsync) {
+                    super.channelRead(ctx, msg);
+                } else {
+                    registrySpigot.getTabCompleteExecutor().submit(() -> {
+                        List<String> completions = registrySpigot.tabCompletePacket(player, command);
+                        try {
+                            Object packet = packetPlayOutTabCompleteConstructor
+                                    .newInstance(new Object[]{completions.toArray(new String[0])});
+                            UtilSpigot.sendPacket(player, packet);
+                        } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
+                            e.printStackTrace();
+                        }
+                    });
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         } else {
             super.channelRead(ctx, msg);

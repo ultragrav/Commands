@@ -12,7 +12,7 @@
 
     <groupId>net.ultragrav</groupId>
     <artifactId>Commands</artifactId>
-    <version>1.5.1</version>
+    <version>1.5.3</version>
 
     <build>
         <plugins>
@@ -36,10 +36,6 @@
         <repository>
             <id>velocity</id>
             <url>https://repo.velocitypowered.com/snapshots/</url>
-        </repository>
-        <repository>
-            <id>ultragrav</id>
-            <url>https://mvn.ultragrav.net/</url>
         </repository>
     </repositories>
 
