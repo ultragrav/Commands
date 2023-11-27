@@ -7,6 +7,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandMap;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.SimpleCommandMap;
 import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.RegisteredListener;
 
@@ -55,7 +56,7 @@ public final class RegistrySpigot implements Registry {
     private void unregister(CommandMap commandMap, String str) throws NoSuchFieldException, IllegalAccessException {
         if (commandMap.getCommand(str) != null) {
             // Need to remove the command
-            Field internalKnownCommandsField = commandMap.getClass().getDeclaredField("knownCommands");
+            Field internalKnownCommandsField = SimpleCommandMap.class.getDeclaredField("knownCommands");
             internalKnownCommandsField.setAccessible(true);
 
             Map<String, Command> internalCommands = (Map<String, Command>) internalKnownCommandsField.get(commandMap);
