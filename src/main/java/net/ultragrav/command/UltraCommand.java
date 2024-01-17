@@ -267,7 +267,7 @@ public abstract class UltraCommand {
         List<String> ret = new ArrayList<>();
 
         for (UltraCommand child : this.children) {
-            if (!sender.hasPermission(child.getPermission())) continue;
+            if (child.requirePermission && !sender.hasPermission(child.getPermission())) continue;
             for (String alias : child.aliases) {
                 if (alias.toLowerCase().startsWith(label)) {
                     ret.add(alias);
