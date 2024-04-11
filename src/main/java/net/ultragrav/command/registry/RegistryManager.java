@@ -1,6 +1,7 @@
 package net.ultragrav.command.registry;
 
 import net.ultragrav.command.UltraCommand;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,6 +12,7 @@ public class RegistryManager {
 
     private static List<UltraCommand> registerQueue = new ArrayList<>();
 
+    @NotNull
     private static Registry createRegistry() {
         String rgn = RegistryManager.class.getPackage().getName();
         try {
@@ -40,6 +42,15 @@ public class RegistryManager {
             System.out.println("Could not instantiate Velocity registry");
             e.printStackTrace();
         }
+        try {
+            Class.forName("net.minestom.server.MinecraftServer");
+            Class<Registry> spReg = (Class<Registry>) Class.forName(rgn + ".minestom.RegistryMinestom");
+            return spReg.newInstance();
+        } catch (ClassNotFoundException ignored) {
+        } catch (IllegalAccessException | InstantiationException e) {
+            System.out.println("Could not instantiate Minestom registry");
+            e.printStackTrace();
+        }
         return new CustomRegistry();
         //throw new RuntimeException("Could not create a registry in the current environment, are you on a supported platform?");
     }
@@ -47,12 +58,10 @@ public class RegistryManager {
     public static Registry getCurrentRegistry() {
         if (activeRegistry == null) {
             activeRegistry = createRegistry();
-            if (activeRegistry != null) {
-                for (UltraCommand cmd : registerQueue) {
-                    activeRegistry.register(cmd);
-                }
-                registerQueue = null;
+            for (UltraCommand cmd : registerQueue) {
+                activeRegistry.register(cmd);
             }
+            registerQueue = null;
         }
         return activeRegistry;
     }

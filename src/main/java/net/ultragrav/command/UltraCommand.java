@@ -28,8 +28,8 @@ public abstract class UltraCommand {
     // ----------------------------------- //
     // COMMAND INFORMATION
     // ----------------------------------- //
-    protected final List<String> aliases = new ArrayList<>();
-    protected final Set<UltraCommand> children = new HashSet<>();
+    public final List<String> aliases = new ArrayList<>();
+    public final Set<UltraCommand> children = new HashSet<>();
     @Setter
     protected UltraCommand parent;
     @Setter
