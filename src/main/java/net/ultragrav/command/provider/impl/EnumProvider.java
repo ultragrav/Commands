@@ -28,7 +28,7 @@ public abstract class EnumProvider<T extends Enum<T>> extends UltraProvider<Enum
     }
 
     @Override
-    public Enum<T> convert(@NonNull String toConvert, UltraSender sender) throws CommandException {
+    public T convert(@NonNull String toConvert, UltraSender sender) throws CommandException {
         String n = toConvert;
         if (!caseSens) {
             T[] consts = enumClass.getEnumConstants();
