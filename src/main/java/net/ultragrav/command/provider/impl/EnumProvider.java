@@ -15,7 +15,7 @@ import java.util.List;
  *
  * @param <T> Enum
  */
-public abstract class EnumProvider<T extends Enum<T>> extends UltraProvider<Enum<T>> {
+public abstract class EnumProvider<T extends Enum<T>> extends UltraProvider<T> {
     private Class<T> enumClass;
     private boolean caseSens = false;
 
